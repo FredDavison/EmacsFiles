@@ -12,7 +12,11 @@
                          ("melpa" . "http://melpa.org/packages/")))
 (package-initialize)
 
-(setq my-package-list '(flatui-theme auto-complete evil flycheck jedi undo-tree nlinum-relative))
+(setq my-package-list '(
+			flatui-theme auto-complete evil flycheck jedi
+				     undo-tree nlinum-relative helm
+				     )
+      )
 (if (eq system-type 'darwin)
     (add-to-list 'my-package-list 'exec-path-from-shell)
 )
@@ -43,8 +47,11 @@
 (setq ac-auto-start nil)
 (define-key ac-mode-map (kbd "M-C-i") 'auto-complete)
 
-;(require 'helm-config)
-;(global-set-key (kbd "M-x") 'helm-M-x)
+(require 'helm-config)
+(setq helm-mode t)
+(setq helm-mode-fuzzy-match nil)
+(global-set-key (kbd "M-x") 'helm-M-x)
+
 
 (add-hook 'python-mode-hook 'jedi:setup)
 (setq jedi:complete-on-dot t)
