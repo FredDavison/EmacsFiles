@@ -40,14 +40,6 @@
 
 (use-package jedi)
 
-(use-package helm
-  :init
-  (require 'helm-config)
-  (setq helm-mode-fuzzy-match nil)
-  (global-set-key (kbd "M-x") 'helm-M-x)
-  (setq helm-mode nil)
-  (setq helm-mode t)
-  )
 
 (use-package flycheck
   :init
@@ -60,10 +52,15 @@
   (global-nlinum-relative-mode)
   )
 
-(use-package evil-tabs
-  :init
-  (global-evil-tabs-mode)
-  )
+;;; Packages that for whatever reason don't work with use-package
+(package-install 'helm)
+(helm-mode t)
+(require 'helm-config)
+(setq helm-mode-fuzzy-match nil)
+(global-set-key (kbd "M-x") 'helm-M-x)
+
+(package-install evil-tabs)
+(global-evil-tabs-mode)
 
 (setq python-shell-interpreter "ipython"
        python-shell-interpreter-args "-i")
