@@ -29,6 +29,12 @@
 (use-package evil
   :init
   (evil-mode t)
+  (setq evil-symbol-word-search (quote symbol))
+  )
+
+(use-package evil-surround
+  :init
+  ()
   )
 
 (use-package auto-complete
@@ -40,7 +46,6 @@
 
 (use-package jedi)
 
-
 (use-package flycheck
   :init
   ;(add-hook 'after-init-hook #'global-flycheck-mode)
@@ -50,7 +55,12 @@
 (use-package nlinum-relative
   :init
   (global-nlinum-relative-mode)
+  (set-face-attribute 'nlinum-relative-current-face nil :inherit
+		      'linum :background "#EDEDED" :foreground
+		      "#9A9A9A" :weight 'normal
+		      )
   )
+
 
 ;;; Packages that for whatever reason don't work with use-package
 (package-install 'helm)
@@ -59,13 +69,18 @@
 (setq helm-mode-fuzzy-match nil)
 (global-set-key (kbd "M-x") 'helm-M-x)
 
-(package-install evil-tabs)
+;(package-install evil-tabs)
 (global-evil-tabs-mode)
 
 (setq python-shell-interpreter "ipython"
        python-shell-interpreter-args "-i")
 
 ;;; Code
+
+; Make underscore and dash not delimit words for Evil mode
+(modify-syntax-entry ?_ "w" (standard-syntax-table))
+(modify-syntax-entry ?- "w" (standard-syntax-table))
+
 (setq inhibit-splash-screen t)
 (setq initial-scratch-message "")
 
@@ -74,11 +89,31 @@
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
 
+(set-default 'truncate-lines t)
+
 (defun set-windows-variables ()
-    "SET THE FACE WHEN ON WINDOWS MACHINES."
+    "WINDOWS SPECIFIC OPTIONS"
     (set-face-font (quote default) "-outline-Consolas-normal-normal-normal-mono-*-*-*-*-c-*-iso10646-1")
   )
 
 (if (eq system-type 'windows-nt)
     (set-windows-variables)
 )
+
+
+
+
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (evil-surround yasnippet use-package tabbar s pyvenv nlinum-relative linum-relative leuven-theme jedi highlight-indentation helm flycheck flatui-theme find-file-in-project exec-path-from-shell evil-tabs company color-theme-sanityinc-tomorrow))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
