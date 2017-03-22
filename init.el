@@ -18,7 +18,18 @@
   (load-theme 'leuven t)
   )
 
+;; (use-package elscreen
+;;   :init
+;;   (elscreen-start)
+;;   (setq elscreen-display-tab nil)
+;;   (setq elscreen-prefix-key "C-.")
+;;   (global-unset-key "C-.")
+;;   (elscreen-set-prefix-key "^.")
+;;   )
+
 ; Initialize environment from the user's shell.
+(use-package fuzzy)
+
 (use-package exec-path-from-shell
   :if (eq system-type 'darwin)
   :init
@@ -34,17 +45,25 @@
 
 (use-package evil-surround
   :init
-  ()
+  (global-evil-surround-mode t)
   )
 
 (use-package auto-complete
   :init
   (global-auto-complete-mode t)
   (setq ac-auto-start nil)
+  (setq ac-max-width 0.3)
+  (setq ac-quick-help-delay 0.25)
   (define-key ac-mode-map (kbd "M-C-i") 'auto-complete)
   )
 
-(use-package jedi)
+(use-package jedi
+  :init
+  (add-hook 'python-mode-hook 'jedi:setup)
+  (add-hook 'python-mode-hook 'set-python-ac-sources)
+  (setq jedi:complete-on-dot t)
+  (setq jedi:get-in-function-call-delay 500)
+)
 
 (use-package flycheck
   :init
@@ -77,17 +96,33 @@
 
 ;;; Code
 
+(defun set-python-ac-sources ()
+  "Remmove the same buffers ac source"
+  ;(setq ac-sources (remove 'ac-sources-worders-in-same-mode-buffers ac-sources))
+    (setq ac-sources '(ac-source-jedi-direct))
+  )
+
+  ac-source-words-in-same-mode-buffers
+
+(require 'recentf)
+(recentf-mode 1)
+(setq recentf-max-menu-items 50)
+(global-set-key "\C-x\ \C-r" 'helm-recentf)
+;(global-set-key "\C-x\ \C-r" 'recentf-open-files)
+
 ; Make underscore and dash not delimit words for Evil mode
 (modify-syntax-entry ?_ "w" (standard-syntax-table))
 (modify-syntax-entry ?- "w" (standard-syntax-table))
 
 (setq inhibit-splash-screen t)
 (setq initial-scratch-message "")
+(setq echo-keystrokes 0.1)
 
 (blink-cursor-mode 0)
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
+(global-hl-line-mode t)
 
 (set-default 'truncate-lines t)
 
@@ -100,6 +135,17 @@
     (set-windows-variables)
 )
 
+; Add Gnu versions of find and grep to path. Don't do this in Windows
+; settings because of Windows sys command find
+(if (eq system-type 'windows-nt)
+    (setenv "PATH"
+	    (concat
+	     "C:/Users/fda/bin/GnuWin32/bin" ";"
+	     (getenv "PATH")
+	     )
+	    )
+  )
+
 
 
 
@@ -110,7 +156,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (evil-surround yasnippet use-package tabbar s pyvenv nlinum-relative linum-relative leuven-theme jedi highlight-indentation helm flycheck flatui-theme find-file-in-project exec-path-from-shell evil-tabs company color-theme-sanityinc-tomorrow))))
+    (fuzzy evil-surround yasnippet use-package tabbar s pyvenv nlinum-relative linum-relative leuven-theme jedi highlight-indentation helm flycheck flatui-theme find-file-in-project exec-path-from-shell evil-tabs company color-theme-sanityinc-tomorrow))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
