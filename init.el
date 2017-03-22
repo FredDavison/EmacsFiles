@@ -146,7 +146,13 @@
 	    )
   )
 
-
+(if (eq system-type 'darwin)
+    (progn
+      ;; Allow hash to be entered  
+      (global-unset-key (kbd "M-3"))
+      (global-set-key (kbd "M-3") '(lambda () (interactive) (insert "#")))
+      )
+  )
 
 
 (custom-set-variables
