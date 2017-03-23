@@ -102,6 +102,7 @@
 (when (eq system-type 'darwin)
       (global-set-key (kbd "M-3") '(lambda () (interactive) (insert "#")))
       (define-key evil-normal-state-map (kbd "M-3" ) 'evil-search-word-backward)
+      (define-key isearch-mode-map (kbd "M-3") '(lambda () (interactive) (isearch-process-search-char ?\#)))
   )
 
 
