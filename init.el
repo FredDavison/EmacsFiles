@@ -96,6 +96,15 @@
   )
   
 
+;;; Remaps
+
+; Configure # key to work as intended in evil-mode on Mac
+(when (eq system-type 'darwin)
+      (global-set-key (kbd "M-3") '(lambda () (interactive) (insert "#")))
+      (define-key evil-normal-state-map (kbd "M-3" ) 'evil-search-word-backward)
+  )
+
+
 ;;; Code
 
 (setq python-shell-interpreter "ipython"
@@ -131,24 +140,9 @@
 ; Add Gnu versions of find and grep to path. Don't do this in
 ; Windows settings because it will overwrite Windows system command
 ; find
-(defun set-windows-variables ()
-    "WINDOWS SPECIFIC OPTIONS"
-    (progn
-      (set-face-font (quote default) "-outline-Consolas-normal-normal-normal-mono-*-*-*-*-c-*-iso10646-1")
-      (setenv "PATH"
-	      (concat "C:/Users/fda/bin/GnuWin32/bin" ";" (getenv "PATH"))
-	      )
-      )
-    )
-
-(if (eq system-type 'windows-nt)
-    (set-windows-variables)
-)
-
-;; Allow hash to be entered  
-;(if (eq system-type 'darwin)
-;    (progn
-;      (global-unset-key (kbd "M-3"))
-;      (global-set-key (kbd "M-3") '(lambda () (interactive) (insert "#")))
-;      )
-;  )
+(when (eq system-type 'windows-nt)
+  (set-face-font (quote default) "-outline-Consolas-normal-normal-normal-mono-*-*-*-*-c-*-iso10646-1")
+  (setenv "PATH"
+	  (concat "C:/Users/fda/bin/GnuWin32/bin" ";" (getenv "PATH"))
+	  )
+  )
