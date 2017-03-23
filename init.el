@@ -80,21 +80,26 @@
 		      )
   )
 
+(use-package fuzzy)
 
-;;; Packages that for whatever reason don't work with use-package
-(package-install 'helm)
-(helm-mode t)
-(require 'helm-config)
-(setq helm-mode-fuzzy-match nil)
-(global-set-key (kbd "M-x") 'helm-M-x)
+(use-package evil-tabs
+  :init 
+  (global-evil-tabs-mode)
+  )
 
-;(package-install evil-tabs)
-(global-evil-tabs-mode)
+(use-package helm
+  :init
+  (require 'helm-config)
+  (helm-mode t)
+  (setq helm-mode-fuzzy-match nil)
+  (global-set-key (kbd "M-x") 'helm-M-x)
+  )
+  
+
+;;; Code
 
 (setq python-shell-interpreter "ipython"
        python-shell-interpreter-args "-i")
-
-;;; Code
 
 (defun set-python-ac-sources ()
   "Remmove the same buffers ac source"
@@ -102,13 +107,10 @@
     (setq ac-sources '(ac-source-jedi-direct))
   )
 
-  ac-source-words-in-same-mode-buffers
-
 (require 'recentf)
 (recentf-mode 1)
 (setq recentf-max-menu-items 50)
 (global-set-key "\C-x\ \C-r" 'helm-recentf)
-;(global-set-key "\C-x\ \C-r" 'recentf-open-files)
 
 ; Make underscore and dash not delimit words for Evil mode
 (modify-syntax-entry ?_ "w" (standard-syntax-table))
@@ -126,46 +128,27 @@
 
 (set-default 'truncate-lines t)
 
+; Add Gnu versions of find and grep to path. Don't do this in
+; Windows settings because it will overwrite Windows system command
+; find
 (defun set-windows-variables ()
     "WINDOWS SPECIFIC OPTIONS"
-    (set-face-font (quote default) "-outline-Consolas-normal-normal-normal-mono-*-*-*-*-c-*-iso10646-1")
-  )
+    (progn
+      (set-face-font (quote default) "-outline-Consolas-normal-normal-normal-mono-*-*-*-*-c-*-iso10646-1")
+      (setenv "PATH"
+	      (concat "C:/Users/fda/bin/GnuWin32/bin" ";" (getenv "PATH"))
+	      )
+      )
+    )
 
 (if (eq system-type 'windows-nt)
     (set-windows-variables)
 )
 
-; Add Gnu versions of find and grep to path. Don't do this in Windows
-; settings because of Windows sys command find
-(if (eq system-type 'windows-nt)
-    (setenv "PATH"
-	    (concat
-	     "C:/Users/fda/bin/GnuWin32/bin" ";"
-	     (getenv "PATH")
-	     )
-	    )
-  )
-
-(if (eq system-type 'darwin)
-    (progn
-      ;; Allow hash to be entered  
-      (global-unset-key (kbd "M-3"))
-      (global-set-key (kbd "M-3") '(lambda () (interactive) (insert "#")))
-      )
-  )
-
-
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   (quote
-    (fuzzy evil-surround yasnippet use-package tabbar s pyvenv nlinum-relative linum-relative leuven-theme jedi highlight-indentation helm flycheck flatui-theme find-file-in-project exec-path-from-shell evil-tabs company color-theme-sanityinc-tomorrow))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+;; Allow hash to be entered  
+;(if (eq system-type 'darwin)
+;    (progn
+;      (global-unset-key (kbd "M-3"))
+;      (global-set-key (kbd "M-3") '(lambda () (interactive) (insert "#")))
+;      )
+;  )
