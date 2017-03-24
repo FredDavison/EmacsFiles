@@ -10,11 +10,12 @@
 (package-initialize)
 
 (package-install 'use-package)
+(setq use-package-always-ensure t)
 
 (use-package undo-tree)
 
 (use-package leuven-theme
-  :init
+  :config
   (load-theme 'leuven t)
   )
 
@@ -32,24 +33,29 @@
 
 (use-package exec-path-from-shell
   :if (eq system-type 'darwin)
-  :init
+  :config
   (exec-path-from-shell-initialize)
   )
 
 
+(use-package evil-leader
+  :config
+  (global-evil-leader-mode)
+  )
+
 (use-package evil
-  :init
+  :config
   (evil-mode t)
   (setq evil-symbol-word-search (quote symbol))
   )
 
 (use-package evil-surround
-  :init
+  :config
   (global-evil-surround-mode t)
   )
 
 (use-package auto-complete
-  :init
+  :config
   (global-auto-complete-mode t)
   (setq ac-auto-start nil)
   (setq ac-max-width 0.3)
@@ -58,7 +64,7 @@
   )
 
 (use-package jedi
-  :init
+  :config
   (add-hook 'python-mode-hook 'jedi:setup)
   (add-hook 'python-mode-hook 'set-python-ac-sources)
   (setq jedi:complete-on-dot t)
@@ -66,13 +72,13 @@
 )
 
 (use-package flycheck
-  :init
+  :config
   ;(add-hook 'after-init-hook #'global-flycheck-mode)
   (setq flycheck-check-syntax-automatically '(mode-enabled save))
   )
 
 (use-package nlinum-relative
-  :init
+  :config
   (global-nlinum-relative-mode)
   (set-face-attribute 'nlinum-relative-current-face nil :inherit
 		      'linum :background "#EDEDED" :foreground
@@ -83,12 +89,12 @@
 (use-package fuzzy)
 
 (use-package evil-tabs
-  :init 
+  :config 
   (global-evil-tabs-mode)
   )
 
 (use-package helm
-  :init
+  :config
   (require 'helm-config)
   (helm-mode t)
   (setq helm-mode-fuzzy-match nil)
@@ -157,7 +163,7 @@
     ("15348febfa2266c4def59a08ef2846f6032c0797f001d7b9148f30ace0d08bcf" default)))
  '(package-selected-packages
    (quote
-    (use-package nlinum-relative jedi helm fuzzy flycheck flatui-theme exec-path-from-shell evil-tabs evil-surround))))
+    (evil-leader use-package nlinum-relative jedi helm fuzzy flycheck flatui-theme exec-path-from-shell evil-tabs evil-surround))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
