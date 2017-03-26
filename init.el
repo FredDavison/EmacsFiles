@@ -12,25 +12,20 @@
 (package-install 'use-package)
 (setq use-package-always-ensure t)
 
+
 (use-package undo-tree)
+
 
 (use-package leuven-theme
   :config
   (load-theme 'leuven t)
   )
 
-;; (use-package elscreen
-;;   :init
-;;   (elscreen-start)
-;;   (setq elscreen-display-tab nil)
-;;   (setq elscreen-prefix-key "C-.")
-;;   (global-unset-key "C-.")
-;;   (elscreen-set-prefix-key "^.")
-;;   )
 
-; Initialize environment from the user's shell.
 (use-package fuzzy)
 
+
+; Initialize environment from the user's shell.
 (use-package exec-path-from-shell
   :if (eq system-type 'darwin)
   :config
@@ -38,10 +33,13 @@
   )
 
 
-(use-package evil-leader
-  :config
-  (global-evil-leader-mode)
-  )
+;(use-package evil-leader
+;  :config
+;  ;(define-key
+;  (global-evil-leader-mode t)
+;  (evil-leader/set-key "b" 'switch-to-buffer)
+;  )
+
 
 (use-package evil
   :config
@@ -49,10 +47,12 @@
   (setq evil-symbol-word-search (quote symbol))
   )
 
+
 (use-package evil-surround
   :config
   (global-evil-surround-mode t)
   )
+
 
 (use-package auto-complete
   :config
@@ -63,6 +63,7 @@
   (define-key ac-mode-map (kbd "M-C-i") 'auto-complete)
   )
 
+
 (use-package jedi
   :config
   (add-hook 'python-mode-hook 'jedi:setup)
@@ -71,11 +72,13 @@
   (setq jedi:get-in-function-call-delay 500)
 )
 
+
 (use-package flycheck
   :config
   ;(add-hook 'after-init-hook #'global-flycheck-mode)
   (setq flycheck-check-syntax-automatically '(mode-enabled save))
   )
+
 
 (use-package nlinum-relative
   :config
@@ -86,12 +89,15 @@
 		      )
   )
 
+
 (use-package fuzzy)
+
 
 (use-package evil-tabs
   :config 
   (global-evil-tabs-mode)
   )
+
 
 (use-package helm
   :config
@@ -100,7 +106,13 @@
   (setq helm-mode-fuzzy-match nil)
   (global-set-key (kbd "M-x") 'helm-M-x)
   )
-  
+
+(use-package smartparens
+  :config
+  (smartparens-mode t)
+  (require 'smartparens-config)
+  )
+
 
 ;;; Remaps
 
@@ -112,7 +124,28 @@
   )
 
 
+(require 'python)
+(define-key python-mode-map (kbd "C-c i") 'insert-ipdb-break)
+(define-key python-mode-map (kbd "C-c t") 'insert-ipdb-break-with-traceback)
+  
+
 ;;; Code
+
+(electric-pair-mode 0)
+
+(defun insert-ipdb-break ()
+  (interactive) (insert "import ipdb; ipdb.set_trace()")
+  )
+
+
+(defun insert-ipdb-break-with-traceback ()
+  (interactive)
+  (progn
+    (insert "import traceback; traceback.print_exc();")
+    (insert-ipdb-break)
+    )
+  )
+
 
 (setq python-shell-interpreter "ipython"
        python-shell-interpreter-args "-i")
@@ -125,7 +158,7 @@
 
 (require 'recentf)
 (recentf-mode 1)
-(setq recentf-max-menu-items 50)
+(setq recentf-max-menu-items 100)
 (global-set-key "\C-x\ \C-r" 'helm-recentf)
 
 ; Make underscore and dash not delimit words for Evil mode
@@ -153,6 +186,8 @@
 	  (concat "C:/Users/fda/bin/GnuWin32/bin" ";" (getenv "PATH"))
 	  )
   )
+
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -163,7 +198,7 @@
     ("15348febfa2266c4def59a08ef2846f6032c0797f001d7b9148f30ace0d08bcf" default)))
  '(package-selected-packages
    (quote
-    (evil-leader use-package nlinum-relative jedi helm fuzzy flycheck flatui-theme exec-path-from-shell evil-tabs evil-surround))))
+    (leuven-theme smartparens electric-pair-mode auto-pair evil-leader use-package nlinum-relative jedi helm fuzzy flycheck flatui-theme exec-path-from-shell evil-tabs evil-surround))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
