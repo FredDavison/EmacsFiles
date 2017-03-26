@@ -1,9 +1,11 @@
 ;;; init.el ---  FCD config settings for Emacs.
 
 ;;; Commentary:
-; Should port successfully between both OSX and Windows 7 machines
+; Should work on both OSX and Windows 7 machines
 
-;;; Packages
+; ----------------------------------------------------------------------------- ;
+; Packages                                                                      ;
+; ----------------------------------------------------------------------------- ;
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
                          ("marmalade" . "http://marmalade-repo.org/packages/")
                          ("melpa" . "http://melpa.org/packages/")))
@@ -33,12 +35,14 @@
   )
 
 
-;(use-package evil-leader
-;  :config
-;  ;(define-key
-;  (global-evil-leader-mode t)
-;  (evil-leader/set-key "b" 'switch-to-buffer)
-;  )
+(use-package evil-leader
+  :config
+  (global-evil-leader-mode t)
+  (evil-leader/set-key "o" 'fcd/evil-open-below-return-normal)
+  (evil-leader/set-key "O" 'fcd/evil-open-above-return-normal)
+  (evil-leader/set-key-for-mode 'python-mode "i" 'fcd/insert-ipdb-break)
+  (evil-leader/set-key-for-mode 'python-mode "t" 'fcd/insert-ipdb-break-with-traceback)
+  )
 
 
 (use-package evil
@@ -114,7 +118,9 @@
   )
 
 
-;;; Remaps
+; ----------------------------------------------------------------------------- ;
+; Remaps                                                                        ;
+; ----------------------------------------------------------------------------- ;
 
 ; Configure # key to work as intended in evil-mode on Mac
 (when (eq system-type 'darwin)
@@ -124,21 +130,31 @@
   )
 
 
-(require 'python)
-(define-key python-mode-map (kbd "C-c i") 'insert-ipdb-break)
-(define-key python-mode-map (kbd "C-c t") 'insert-ipdb-break-with-traceback)
-  
+; ----------------------------------------------------------------------------- ;
+; Code                                                                          ;
+; ----------------------------------------------------------------------------- ;
 
-;;; Code
+(defun fcd/evil-open-below-return-normal (count)
+  (interactive "p")
+  (progn
+    (evil-open-below count)
+    (evil-normal-state))
+  )
 
-(electric-pair-mode 0)
+(defun fcd/evil-open-above-return-normal (count)
+  (interactive "p")
+  (progn
+    (evil-open-above count)
+    (evil-normal-state))
+  )
 
-(defun insert-ipdb-break ()
+
+(defun fcd/insert-ipdb-break ()
   (interactive) (insert "import ipdb; ipdb.set_trace()")
   )
 
 
-(defun insert-ipdb-break-with-traceback ()
+(defun fcd/insert-ipdb-break-with-traceback ()
   (interactive)
   (progn
     (insert "import traceback; traceback.print_exc();")
