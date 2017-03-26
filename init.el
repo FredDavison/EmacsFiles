@@ -40,6 +40,8 @@
   (global-evil-leader-mode t)
   (evil-leader/set-key "o" 'fcd/evil-open-below-return-normal)
   (evil-leader/set-key "O" 'fcd/evil-open-above-return-normal)
+  (evil-leader/set-key "d=" 'fcd/substitute-before-equal-sign)
+  (evil-leader/set-key "D=" 'fcd/substitute-after-equal-sign)
   (evil-leader/set-key-for-mode 'python-mode "i" 'fcd/insert-ipdb-break)
   (evil-leader/set-key-for-mode 'python-mode "t" 'fcd/insert-ipdb-break-with-traceback)
   )
@@ -113,8 +115,12 @@
 
 (use-package smartparens
   :config
-  (smartparens-mode t)
+  (smartparens-global-mode t)
   (require 'smartparens-config)
+  (global-set-key (kbd "C-c ]") 'sp-forward-slurp-sexp)
+  (global-set-key (kbd "C-c [") 'sp-forward-barf-sexp)
+  (global-set-key (kbd "C-c }") 'sp-backward-slurp-sexp)
+  (global-set-key (kbd "C-c {") 'sp-backward-barf-sexp)
   )
 
 
@@ -150,27 +156,73 @@
 
 
 (defun fcd/insert-ipdb-break ()
-  (interactive) (insert "import ipdb; ipdb.set_trace()")
+  (interactive)
+  (progn
+    (evil-open-below 1)
+    (insert "import ipdb; ipdb.set_trace()")
+    (evil-normal-state)
+    )
   )
+      
 
 
 (defun fcd/insert-ipdb-break-with-traceback ()
   (interactive)
   (progn
+    (evil-open-below 1)
     (insert "import traceback; traceback.print_exc();")
-    (insert-ipdb-break)
+    (fcd/insert-ipdb-break)
+    (evil-normal-state)
     )
   )
 
 
+(defun fcd/substitute-before-equal-sign ()
+  ;;; Delete text before the equals sign and position point for entry
+  ;;; at new beginning of line
+  ;TODO messes up alignment
+  (interactive)
+  (progn
+    (evil-delete (line-beginning-position) (fcd/character-position-search-from-line-start "=") )
+    (insert " ")
+    (evil-beginning-of-line)
+    (evil-insert-state)
+    )
+  )
+
+(defun fcd/substitute-after-equal-sign ()
+  ;;; Delete text after an equals sign and position point for entry
+  ;;; at new end of line
+  (interactive)
+  (progn
+    (message (format "%d" (fcd/character-position-search-from-line-start "=")))
+    (message (format "%d" (line-end-position)))
+    (evil-delete (1+ (fcd/character-position-search-from-line-start "=")) (line-end-position))
+    (evil-append-line 1)
+    (insert " ")
+    )
+  )
+
+(defun fcd/character-position-search-from-line-start (pattern)
+  (save-excursion
+    (evil-move-beginning-of-line)
+    (re-search-forward pattern)
+    )
+   (if (> (match-beginning 0) (line-end-position))
+       (line-beginning-position)
+     (match-beginning 0)
+     )
+  )
+
+
 (setq python-shell-interpreter "ipython"
-       python-shell-interpreter-args "-i")
+    python-shell-interpreter-args "-i")
 
 (defun set-python-ac-sources ()
-  "Remmove the same buffers ac source"
-  ;(setq ac-sources (remove 'ac-sources-worders-in-same-mode-buffers ac-sources))
-    (setq ac-sources '(ac-source-jedi-direct))
-  )
+"Remmove the same buffers ac source"
+				    ;(setq ac-sources (remove 'ac-sources-worders-in-same-mode-buffers ac-sources))
+(setq ac-sources '(ac-source-jedi-direct))
+)
 
 (require 'recentf)
 (recentf-mode 1)
