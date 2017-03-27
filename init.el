@@ -195,8 +195,6 @@
   ;;; at new end of line
   (interactive)
   (progn
-    (message (format "%d" (fcd/character-position-search-from-line-start "=")))
-    (message (format "%d" (line-end-position)))
     (evil-delete (1+ (fcd/character-position-search-from-line-start "=")) (line-end-position))
     (evil-append-line 1)
     (insert " ")
