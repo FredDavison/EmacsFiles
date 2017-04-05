@@ -51,6 +51,8 @@
   :config
   (evil-mode t)
   (setq evil-symbol-word-search (quote symbol))
+  (setq evil-normal-state-modes (append evil-motion-state-modes evil-normal-state-modes))
+  (setq evil-motion-state-modes nil)
   )
 
 
@@ -81,8 +83,9 @@
 
 (use-package flycheck
   :config
-  ;(add-hook 'after-init-hook #'global-flycheck-mode)
+  (add-hook 'after-init-hook #'global-flycheck-mode)
   (setq flycheck-check-syntax-automatically '(mode-enabled save))
+  (setq flycheck-checker-error-threshold 1000)
   )
 
 
@@ -111,6 +114,7 @@
   (helm-mode t)
   (setq helm-mode-fuzzy-match nil)
   (global-set-key (kbd "M-x") 'helm-M-x)
+  (global-set-key (kbd "C-x C-f") 'helm-find-files)
   )
 
 (use-package smartparens
@@ -123,6 +127,11 @@
   (global-set-key (kbd "C-c {") 'sp-backward-barf-sexp)
   )
 
+(use-package helm-projectile
+  :config
+  (helm-projectile-on)
+  (setq projectile-indexing-method 'alien)
+  )
 
 ; ----------------------------------------------------------------------------- ;
 ; Remaps                                                                        ;
@@ -132,27 +141,25 @@
 (when (eq system-type 'darwin)
       (global-set-key (kbd "M-3") '(lambda () (interactive) (insert "#")))
       (define-key evil-normal-state-map (kbd "M-3" ) 'evil-search-word-backward)
-      (define-key isearch-mode-map (kbd "M-3") '(lambda () (interactive) (isearch-process-search-char ?\#)))
-  )
+      (define-key isearch-mode-map (kbd "M-3") '(lambda () (interactive) (isearch-process-search-char ?\#))))
 
 
 ; ----------------------------------------------------------------------------- ;
-; Code                                                                          ;
+;;; Code                                                                          ;
 ; ----------------------------------------------------------------------------- ;
 
 (defun fcd/evil-open-below-return-normal (count)
   (interactive "p")
   (progn
     (evil-open-below count)
-    (evil-normal-state))
-  )
+    (evil-normal-state)))
+
 
 (defun fcd/evil-open-above-return-normal (count)
   (interactive "p")
   (progn
     (evil-open-above count)
-    (evil-normal-state))
-  )
+    (evil-normal-state)))
 
 
 (defun fcd/insert-ipdb-break ()
@@ -160,10 +167,7 @@
   (progn
     (evil-open-below 1)
     (insert "import ipdb; ipdb.set_trace()")
-    (evil-normal-state)
-    )
-  )
-      
+    (evil-normal-state)))
 
 
 (defun fcd/insert-ipdb-break-with-traceback ()
@@ -172,13 +176,11 @@
     (evil-open-below 1)
     (insert "import traceback; traceback.print_exc();")
     (fcd/insert-ipdb-break)
-    (evil-normal-state)
-    )
-  )
+    (evil-normal-state)))
 
 
 (defun fcd/substitute-before-equal-sign ()
-  ;;; Delete text before the equals sign and position point for entry
+  "Evil change from start of line to equals sign."
   ;;; at new beginning of line
   ;TODO messes up alignment
   (interactive)
@@ -186,62 +188,59 @@
     (evil-delete (line-beginning-position) (fcd/character-position-search-from-line-start "=") )
     (insert " ")
     (evil-beginning-of-line)
-    (evil-insert-state)
-    )
-  )
+    (evil-insert-state)))
+
 
 (defun fcd/substitute-after-equal-sign ()
-  ;;; Delete text after an equals sign and position point for entry
-  ;;; at new end of line
+  "Evil change from equals sign to end of line."
   (interactive)
   (progn
     (evil-delete (1+ (fcd/character-position-search-from-line-start "=")) (line-end-position))
     (evil-append-line 1)
-    (insert " ")
-    )
-  )
+    (insert " ")))
+
 
 (defun fcd/character-position-search-from-line-start (pattern)
   (save-excursion
     (evil-move-beginning-of-line)
-    (re-search-forward pattern)
-    )
+    (re-search-forward pattern))
    (if (> (match-beginning 0) (line-end-position))
        (line-beginning-position)
-     (match-beginning 0)
-     )
-  )
+     (match-beginning 0)))
 
 
 (setq python-shell-interpreter "ipython"
     python-shell-interpreter-args "-i")
 
+
 (defun set-python-ac-sources ()
-"Remmove the same buffers ac source"
-				    ;(setq ac-sources (remove 'ac-sources-worders-in-same-mode-buffers ac-sources))
-(setq ac-sources '(ac-source-jedi-direct))
-)
+  "Only use jedi as auto-complete source."
+  (setq ac-sources '(ac-source-jedi-direct)))
+
 
 (require 'recentf)
 (recentf-mode 1)
 (setq recentf-max-menu-items 100)
 (global-set-key "\C-x\ \C-r" 'helm-recentf)
 
+
 ; Make underscore and dash not delimit words for Evil mode
 (modify-syntax-entry ?_ "w" (standard-syntax-table))
 (modify-syntax-entry ?- "w" (standard-syntax-table))
 
+
 (setq inhibit-splash-screen t)
 (setq initial-scratch-message "")
 (setq echo-keystrokes 0.1)
+
 
 (blink-cursor-mode 0)
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
 (global-hl-line-mode t)
-
 (set-default 'truncate-lines t)
+
 
 ; Add Gnu versions of find and grep to path. Don't do this in
 ; Windows settings because it will overwrite Windows system command
@@ -249,9 +248,7 @@
 (when (eq system-type 'windows-nt)
   (set-face-font (quote default) "-outline-Consolas-normal-normal-normal-mono-*-*-*-*-c-*-iso10646-1")
   (setenv "PATH"
-	  (concat "C:/Users/fda/bin/GnuWin32/bin" ";" (getenv "PATH"))
-	  )
-  )
+	  (concat "C:/Users/fda/bin/GnuWin32/bin" ";" (getenv "PATH"))))
 
 
 (custom-set-variables
@@ -264,7 +261,7 @@
     ("15348febfa2266c4def59a08ef2846f6032c0797f001d7b9148f30ace0d08bcf" default)))
  '(package-selected-packages
    (quote
-    (leuven-theme smartparens electric-pair-mode auto-pair evil-leader use-package nlinum-relative jedi helm fuzzy flycheck flatui-theme exec-path-from-shell evil-tabs evil-surround))))
+    (tfs helm-projectile leuven-theme smartparens electric-pair-mode auto-pair evil-leader use-package nlinum-relative jedi helm fuzzy flycheck flatui-theme exec-path-from-shell evil-tabs evil-surround))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
