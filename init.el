@@ -148,6 +148,11 @@
 ;;; Code                                                                          ;
 ; ----------------------------------------------------------------------------- ;
 
+
+(global-auto-revert-mode)
+(setq auto-revert-interval 0.1)
+
+
 (defun fcd/evil-open-below-return-normal (count)
   (interactive "p")
   (progn
@@ -261,7 +266,7 @@
     ("15348febfa2266c4def59a08ef2846f6032c0797f001d7b9148f30ace0d08bcf" default)))
  '(package-selected-packages
    (quote
-    (tfs helm-projectile leuven-theme smartparens electric-pair-mode auto-pair evil-leader use-package nlinum-relative jedi helm fuzzy flycheck flatui-theme exec-path-from-shell evil-tabs evil-surround))))
+    (smartparens evil-leader leuven-theme use-package nlinum-relative jedi helm fuzzy flycheck flatui-theme exec-path-from-shell evil-tabs evil-surround))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
