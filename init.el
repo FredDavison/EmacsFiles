@@ -129,6 +129,7 @@
 
 (use-package helm-projectile
   :config
+  (projectile-mode t)
   (helm-projectile-on)
   (setq projectile-indexing-method 'alien)
   )
