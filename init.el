@@ -134,6 +134,7 @@
 
 (use-package helm-projectile
   :config
+  (projectile-mode t)
   (helm-projectile-on)
   (setq projectile-indexing-method 'alien)
   )
@@ -148,6 +149,8 @@
       (define-key evil-normal-state-map (kbd "M-3" ) 'evil-search-word-backward)
       (define-key isearch-mode-map (kbd "M-3") '(lambda () (interactive) (isearch-process-search-char ?\#))))
 
+(global-set-key (kbd "C-c f") 'fcd/show-buffer-file-name)
+
 
 ; ----------------------------------------------------------------------------- ;
 ;;; Code                                                                          ;
@@ -157,6 +160,9 @@
 (global-auto-revert-mode)
 (setq auto-revert-interval 0.1)
 
+(defun fcd/show-buffer-file-name ()
+    (interactive)
+  (message (buffer-file-name)))
 
 (defun fcd/evil-open-below-return-normal (count)
   (interactive "p")
