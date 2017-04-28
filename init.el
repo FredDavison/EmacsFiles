@@ -61,6 +61,10 @@
   (global-evil-surround-mode t)
   )
 
+(use-package evil-commentary
+  :config
+  (evil-commentary-mode))
+
 
 (use-package auto-complete
   :config
@@ -267,7 +271,7 @@
     ("15348febfa2266c4def59a08ef2846f6032c0797f001d7b9148f30ace0d08bcf" default)))
  '(package-selected-packages
    (quote
-    (helm-projectile smartparens evil-leader leuven-theme use-package nlinum-relative jedi helm fuzzy flycheck flatui-theme exec-path-from-shell evil-tabs evil-surround))))
+    (evil-commentary jedi helm-projectile smartparens evil-leader leuven-theme use-package nlinum-relative helm fuzzy flycheck flatui-theme exec-path-from-shell evil-tabs evil-surround))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
