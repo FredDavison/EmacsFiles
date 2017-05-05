@@ -104,7 +104,7 @@
 
 
 (use-package evil-tabs
-  :config 
+  :config
   (global-evil-tabs-mode)
   )
 
