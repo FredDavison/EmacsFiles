@@ -72,8 +72,7 @@
   (setq ac-auto-start nil)
   (setq ac-max-width 0.3)
   (setq ac-quick-help-delay 0.25)
-  (define-key ac-mode-map (kbd "M-C-i") 'auto-complete)
-  )
+  (define-key ac-mode-map (kbd "M-C-i") 'auto-complete))
 
 
 (use-package jedi
@@ -81,8 +80,7 @@
   (add-hook 'python-mode-hook 'jedi:setup)
   (add-hook 'python-mode-hook 'set-python-ac-sources)
   (setq jedi:complete-on-dot t)
-  (setq jedi:get-in-function-call-delay 500)
-)
+  (setq jedi:get-in-function-call-delay 500))
 
 
 (use-package flycheck
@@ -90,8 +88,7 @@
   (add-hook 'after-init-hook #'global-flycheck-mode)
   (setq flycheck-check-syntax-automatically '(mode-enabled save))
   (setq flycheck-checker-error-threshold 1000)
-  (setq flycheck-indication-mode nil)
-  )
+  (setq flycheck-indication-mode nil))
 
 
 (use-package nlinum-relative
@@ -99,9 +96,7 @@
   (global-nlinum-relative-mode)
   (set-face-attribute 'nlinum-relative-current-face nil :inherit
 		      'linum :background "#EDEDED" :foreground
-		      "#9A9A9A" :weight 'normal
-		      )
-  )
+		      "#9A9A9A" :weight 'normal))
 
 
 (use-package fuzzy)
@@ -139,6 +134,21 @@
   (setq projectile-indexing-method 'alien)
   )
 
+(use-package auto-virtualenvwrapper
+  :config
+  (add-hook 'python-mode-hook #'auto-virtualenvwrapper-activate))
+
+(use-package web-mode
+  :config
+  (add-to-list 'auto-mode-alist '("\\.css\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.js\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
+  (setq web-mode-markup-indent-offset 2)
+  )
+
+
 ; ----------------------------------------------------------------------------- ;
 ; Remaps                                                                        ;
 ; ----------------------------------------------------------------------------- ;
@@ -151,10 +161,15 @@
 
 (global-set-key (kbd "C-c f") 'fcd/show-buffer-file-name)
 
+(global-set-key (kbd "C-c i") 'fcd/open-init-file)
+
 
 ; ----------------------------------------------------------------------------- ;
 ;;; Code                                                                          ;
 ; ----------------------------------------------------------------------------- ;
+
+(setq backup-directory-alist '(("." . "~/.emacsbackups")))
+(setq backup-by-copying t)
 
 
 (global-auto-revert-mode)
@@ -224,6 +239,12 @@
        (line-beginning-position)
      (match-beginning 0)))
 
+(defun fcd/open-init-file ()
+  "Open the user's init.el file."
+  (interactive)
+  (find-file user-init-file)
+  )
+
 
 (setq python-shell-interpreter "ipython"
     python-shell-interpreter-args "-i")
@@ -277,7 +298,7 @@
     ("15348febfa2266c4def59a08ef2846f6032c0797f001d7b9148f30ace0d08bcf" default)))
  '(package-selected-packages
    (quote
-    (evil-commentary jedi helm-projectile smartparens evil-leader leuven-theme use-package nlinum-relative helm fuzzy flycheck flatui-theme exec-path-from-shell evil-tabs evil-surround))))
+    (web-mode auto-virtualenvwrapper evil-commentary jedi helm-projectile smartparens evil-leader leuven-theme use-package nlinum-relative helm fuzzy flycheck flatui-theme exec-path-from-shell evil-tabs evil-surround))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
