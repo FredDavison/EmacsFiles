@@ -136,8 +136,12 @@
   :config
   (projectile-mode t)
   (helm-projectile-on)
+  (setq projectile-globally-ignored-files (append '("*.exe" "*.sdf") projectile-globally-ignored-files))
   (setq projectile-indexing-method 'alien)
   )
+
+(use-package evil-ediff)
+
 
 ; ----------------------------------------------------------------------------- ;
 ; Remaps                                                                        ;
@@ -236,7 +240,7 @@
 
 (require 'recentf)
 (recentf-mode 1)
-(setq recentf-max-menu-items 100)
+(setq recentf-max-menu-items 200)
 (global-set-key "\C-x\ \C-r" 'helm-recentf)
 
 
@@ -277,7 +281,7 @@
     ("15348febfa2266c4def59a08ef2846f6032c0797f001d7b9148f30ace0d08bcf" default)))
  '(package-selected-packages
    (quote
-    (evil-commentary jedi helm-projectile smartparens evil-leader leuven-theme use-package nlinum-relative helm fuzzy flycheck flatui-theme exec-path-from-shell evil-tabs evil-surround))))
+    (evil-ediff evil-commentary helm-projectile smartparens evil-leader leuven-theme use-package nlinum-relative jedi helm fuzzy flycheck flatui-theme exec-path-from-shell evil-tabs evil-surround))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
