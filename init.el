@@ -9,6 +9,7 @@
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
                          ("marmalade" . "http://marmalade-repo.org/packages/")
                          ("melpa" . "http://melpa.org/packages/")))
+
 (package-initialize)
 
 (package-install 'use-package)
@@ -20,6 +21,7 @@
 
 (use-package undo-tree)
 
+(use-package csv-mode)
 
 (use-package leuven-theme
   :config
@@ -30,7 +32,7 @@
 (use-package fuzzy)
 
 
-(use-package magit)
+;(use-package magit)
 
 
 ; Initialize environment from the user's shell.
@@ -109,7 +111,7 @@
 
 
 (use-package evil-tabs
-  :config 
+  :config
   (global-evil-tabs-mode)
   )
 
@@ -137,6 +139,8 @@
   :config
   (projectile-mode t)
   (helm-projectile-on)
+  (setq projectile-globally-ignored-files (append '("*.exe" "*.sdf" "*.pyc" "#.*#") projectile-globally-ignored-files))
+  ;; (setq projectile-globally-ignored-files '("TAGS" "*.exe" "*.sdf" "*.pyc" "\#.*\#"))
   (setq projectile-indexing-method 'alien)
   )
 
@@ -144,15 +148,23 @@
   :config
   (add-hook 'python-mode-hook #'auto-virtualenvwrapper-activate))
 
-(use-package web-mode
+
+(when (eq system-type 'darwin)
+  (use-package web-mode
+    :config
+    (add-to-list 'auto-mode-alist '("\\.css\\'" . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.js\\'" . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
+    (setq web-mode-markup-indent-offset 2)
+    (setq web-mode-code-indent-offset 2)
+    )
+  )
+
+(use-package helm-swoop
   :config
-  (add-to-list 'auto-mode-alist '("\\.css\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.js\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
-  (setq web-mode-markup-indent-offset 2)
-  (setq web-mode-code-indent-offset 2)
+  (global-set-key (kbd "C-s") 'helm-swoop)
   )
 
 
@@ -178,6 +190,14 @@
 ; ----------------------------------------------------------------------------- ;
 ;;; Code                                                                          ;
 ; ----------------------------------------------------------------------------- ;
+
+(setq ediff-window-setup-function 'ediff-setup-windows-plain)
+
+(setq scroll-margin 1
+      scroll-conservatively 1)
+
+(setq-default scroll-up-aggressively 0.0
+	      scroll-down-aggressively 0.0)
 
 (setq backup-directory-alist '(("." . "~/.emacsbackups")))
 (setq backup-by-copying t)
@@ -268,7 +288,7 @@
 
 (require 'recentf)
 (recentf-mode 1)
-(setq recentf-max-menu-items 100)
+(setq recentf-max-menu-items 200)
 (global-set-key "\C-x\ \C-r" 'helm-recentf)
 
 
@@ -296,7 +316,10 @@
 (when (eq system-type 'windows-nt)
   (set-face-font (quote default) "-outline-Consolas-normal-normal-normal-mono-*-*-*-*-c-*-iso10646-1")
   (setenv "PATH"
-	  (concat "C:/Users/fda/bin/GnuWin32/bin" ";" (getenv "PATH"))))
+	  (concat "C:/Users/fda/bin/GnuWin32/bin" ";" (getenv "PATH")))
+  (setq exec-path
+	(append '("C:/Users/fda/bin/GnuWin32/bin") exec-path))
+  )
 
 
 (custom-set-variables
@@ -309,7 +332,7 @@
     ("15348febfa2266c4def59a08ef2846f6032c0797f001d7b9148f30ace0d08bcf" default)))
  '(package-selected-packages
    (quote
-    (magit web-mode auto-virtualenvwrapper evil-commentary jedi helm-projectile smartparens evil-leader leuven-theme use-package nlinum-relative helm fuzzy flycheck flatui-theme exec-path-from-shell evil-tabs evil-surround))))
+    (jedi csv-mode helm-swoop magit web-mode auto-virtualenvwrapper evil-commentary helm-projectile smartparens evil-leader leuven-theme use-package nlinum-relative helm fuzzy flycheck flatui-theme exec-path-from-shell evil-tabs evil-surround))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
