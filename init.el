@@ -14,6 +14,9 @@
 (package-install 'use-package)
 (setq use-package-always-ensure t)
 
+(require 'server)
+(unless (server-running-p) (server-start))
+
 
 (use-package undo-tree)
 
@@ -149,6 +152,7 @@
   (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
   (setq web-mode-markup-indent-offset 2)
+  (setq web-mode-code-indent-offset 2)
   )
 
 
@@ -167,6 +171,8 @@
 (global-set-key (kbd "C-c i") 'fcd/open-init-file)
 
 (global-set-key (kbd "C-c m s") 'magit-status)
+
+(global-set-key (kbd "C-c b") 'helm-projectile-find-file)
 
 
 ; ----------------------------------------------------------------------------- ;
