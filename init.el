@@ -1,5 +1,9 @@
 ;;; init.el ---  FCD config settings for Emacs.
 
+					; TODO:
+					; hide line nums by default - add to clear ui function
+					; make dashes not separate words in elisp mode
+
 ;;; Commentary:
 ; Should work on both OSX and Windows 7 machines
 
@@ -186,10 +190,14 @@
 
 (global-set-key (kbd "C-c b") 'helm-projectile-find-file)
 
+(global-set-key (kbd "C-c n") 'fcd/clear-ui)
+
 
 ; ----------------------------------------------------------------------------- ;
 ;;; Code                                                                          ;
 ; ----------------------------------------------------------------------------- ;
+
+(setq startup-mode-line-format mode-line-format)
 
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
 
@@ -285,6 +293,56 @@
   "Only use jedi as auto-complete source."
   (setq ac-sources '(ac-source-jedi-direct)))
 
+(defun fcd/clear-ui ()
+  (interactive)
+  (if (eq mode-line-format startup-mode-line-format)
+      (progn
+	(mapcar 'fcd/hide-mode-line (buffer-list))
+	(global-nlinum-relative-mode)
+	(global-nlinum-mode 'toggle)
+	)
+    (progn
+      (mapcar 'fcd/show-mode-line (buffer-list))
+      (global-nlinum-mode 'toggle)
+      )))
+
+(defun fcd/hide-mode-line (buffer)
+  (with-current-buffer buffer
+    (when (not (minibufferp buffer))
+      (progn
+	(setq mode-line-format nil)
+	(redraw-modeline)
+	))))
+
+(defun fcd/show-mode-line (buffer)
+  (with-current-buffer buffer
+    (when (not (minibufferp buffer))
+      (progn
+	(setq mode-line-format startup-mode-line-format)
+	(redraw-modeline)))))
+
+(defun fcd/set-pylint-exec ()
+  (flycheck-set-checker-executable
+   'python-pylint
+   "c:/Users/fda/repositories/TECC/Main/External/Python/Python27/scripts/pylint.exe"))
+
+
+(when (eq system-type 'windows-nt)
+  (add-hook 'python-mode-hook 'fcd/set-pylint-exec)
+  (set-face-font (quote default) "-outline-Consolas-normal-normal-normal-mono-*-*-*-*-c-*-iso10646-1")
+  (setenv "PATH"
+	  (concat
+	   "C:/Users/fda/repositories/TECC/main/Start;"
+	   "C:/Users/fda/repositories/TECC/main/External/Python/Python27;"
+	   "C:/Users/fda/repositories/TECC/main/External/Python/Python27/Scripts;"
+	   "C:/Users/fda/bin/GnuWin32/bin;"
+	   (getenv "PATH")))
+  (add-to-list
+	'exec-path "C:/Users/fda/repositories/TECC/main/External/Python/Python27/Scripts;")
+  (setq exec-path
+	(append '("C:/Users/fda/bin/GnuWin32/bin") exec-path))
+  )
+
 
 (require 'recentf)
 (recentf-mode 1)
@@ -312,15 +370,7 @@
 
 ; Add Gnu versions of find and grep to path. Don't do this in
 ; Windows settings because it will overwrite Windows system command
-; find
-(when (eq system-type 'windows-nt)
-  (set-face-font (quote default) "-outline-Consolas-normal-normal-normal-mono-*-*-*-*-c-*-iso10646-1")
-  (setenv "PATH"
-	  (concat "C:/Users/fda/bin/GnuWin32/bin" ";" (getenv "PATH")))
-  (setq exec-path
-	(append '("C:/Users/fda/bin/GnuWin32/bin") exec-path))
-  )
-
+; find.
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
