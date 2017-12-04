@@ -310,27 +310,31 @@
   (with-current-buffer buffer
     (when (not (minibufferp buffer))
       (progn
-	(setq mode-line-format "")
-	(set-face-attribute 'mode-line nil
-			    :background "light blue"
-			    :height 0.1)
-	(set-face-attribute 'mode-line-inactive nil
-			    :background "dim grey"
-			    :height 0.1)
-	(redraw-modeline)))))
+	(setq mode-line-format nil)
+	(window-divider-mode)
+	(setq window-divider-default-bottom-width 15)
+	(setq window-divider-default-right-width 1)
+	;; (set-face-attribute 'mode-line nil
+	;; 		    :background "dark blue"
+	;; 		    :height 0.1)
+	;; (set-face-attribute 'mode-line-inactive nil
+	;; 		    :background "dim grey"
+	;; 		    :height 0.1)
+	(force-mode-line-update)))))
 
 (defun fcd/show-mode-line (buffer)
   (with-current-buffer buffer
     (when (not (minibufferp buffer))
       (progn
 	(setq mode-line-format startup-mode-line-format)
-	(set-face-attribute 'mode-line nil
-			    :background "dark blue"
-			    :height 0.9)
-	(set-face-attribute 'mode-line-inactive nil
-			    :background "dim grey"
-			    :height 0.9)
-	(redraw-modeline)))))
+	(window-divider-mode 0)
+	;; (set-face-attribute 'mode-line nil
+	;; 		    :background "dark blue"
+	;; 		    :height 0.9)
+	;; (set-face-attribute 'mode-line-inactive nil
+	;; 		    :background "dim grey"
+	;; 		    :height 0.9)
+	(force-mode-line-update)))))
 
 (defun fcd/set-pylint-exec ()
   (flycheck-set-checker-executable
