@@ -3,6 +3,7 @@
 					; TODO:
 					; hide line nums by default - add to clear ui function
 					; make dashes not separate words in elisp mode
+					; horizontal divider
 
 ;;; Commentary:
 ; Should work on both OSX and Windows 7 machines
@@ -114,10 +115,10 @@
 (use-package fuzzy)
 
 
-(use-package evil-tabs
-  :config
-  (global-evil-tabs-mode)
-  )
+;; (use-package evil-tabs
+;;   :config
+;;   (global-evil-tabs-mode)
+;;   )
 
 
 (use-package helm
@@ -197,11 +198,10 @@
 ;;; Code                                                                          ;
 ; ----------------------------------------------------------------------------- ;
 
-(setq startup-mode-line-format mode-line-format)
 
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
 
-(setq scroll-margin 1
+(setq scroll-margin 0
       scroll-conservatively 1)
 
 (setq-default scroll-up-aggressively 0.0
@@ -299,26 +299,37 @@
       (progn
 	(mapcar 'fcd/hide-mode-line (buffer-list))
 	(global-nlinum-relative-mode)
-	(global-nlinum-mode 'toggle)
+	(global-nlinum-mode 0)
 	)
     (progn
       (mapcar 'fcd/show-mode-line (buffer-list))
-      (global-nlinum-mode 'toggle)
+      (global-nlinum-mode t)
       )))
 
 (defun fcd/hide-mode-line (buffer)
   (with-current-buffer buffer
     (when (not (minibufferp buffer))
       (progn
-	(setq mode-line-format nil)
-	(redraw-modeline)
-	))))
+	(setq mode-line-format "")
+	(set-face-attribute 'mode-line nil
+			    :background "light blue"
+			    :height 0.1)
+	(set-face-attribute 'mode-line-inactive nil
+			    :background "dim grey"
+			    :height 0.1)
+	(redraw-modeline)))))
 
 (defun fcd/show-mode-line (buffer)
   (with-current-buffer buffer
     (when (not (minibufferp buffer))
       (progn
 	(setq mode-line-format startup-mode-line-format)
+	(set-face-attribute 'mode-line nil
+			    :background "dark blue"
+			    :height 0.9)
+	(set-face-attribute 'mode-line-inactive nil
+			    :background "dim grey"
+			    :height 0.9)
 	(redraw-modeline)))))
 
 (defun fcd/set-pylint-exec ()
@@ -358,6 +369,7 @@
 (setq inhibit-splash-screen t)
 (setq initial-scratch-message "")
 (setq echo-keystrokes 0.1)
+(setq startup-mode-line-format mode-line-format)
 
 
 (blink-cursor-mode 0)
@@ -366,11 +378,11 @@
 (tool-bar-mode -1)
 (global-hl-line-mode t)
 (set-default 'truncate-lines t)
+(fcd/clear-ui)
 
-
-; Add Gnu versions of find and grep to path. Don't do this in
-; Windows settings because it will overwrite Windows system command
-; find.
+(set-face-attribute 'mode-line nil
+		    :background "dark blue"
+		    :height 0.9)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
