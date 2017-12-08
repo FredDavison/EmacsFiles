@@ -145,7 +145,7 @@
   )
 
 (use-package auto-virtualenvwrapper
-  :config
+  :'config
   (add-hook 'python-mode-hook #'auto-virtualenvwrapper-activate))
 
 
@@ -164,7 +164,7 @@
 
 (use-package helm-swoop
   :config
-  (global-set-key (kbd "C-s") 'helm-swoop)
+  (global-set-key (kbd "C-s") 'helm-swoop
   )
 
 
@@ -185,6 +185,14 @@
 (global-set-key (kbd "C-c m s") 'magit-status)
 
 (global-set-key (kbd "C-c b") 'helm-projectile-find-file)
+
+(global-set-key (kbd "C-c C-c"))
+
+(require 'python)
+(define-key python-mode-map (kbd "C-c C-c")
+  (progn
+    (lambda () (interactive) (python-shell-send-buffer t))
+    ))
 
 
 ; ----------------------------------------------------------------------------- ;
@@ -277,9 +285,15 @@
   )
 
 
-(setq python-shell-interpreter "ipython"
-    python-shell-interpreter-args "-i")
-
+(setq
+ python-shell-interpreter "ipython"
+ python-shell-interpreter-args "--colors=Linux --simple-prompt"
+ python-shell-prompt-regexp "In \\[[0-9]+\\]: "
+ python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
+ python-shell-completion-setup-code "from IPython.core.completerlib import module_completion"
+ python-shell-completion-module-string-code "';'.join(module_completion('''%s'''))\n"
+ python-shell-completion-string-code "';'.join(get_ipython().Completer.all_completions('''%s'''))\n"
+ )
 
 (defun set-python-ac-sources ()
   "Only use jedi as auto-complete source."
@@ -332,7 +346,7 @@
     ("15348febfa2266c4def59a08ef2846f6032c0797f001d7b9148f30ace0d08bcf" default)))
  '(package-selected-packages
    (quote
-    (jedi csv-mode helm-swoop magit web-mode auto-virtualenvwrapper evil-commentary helm-projectile smartparens evil-leader leuven-theme use-package nlinum-relative helm fuzzy flycheck flatui-theme exec-path-from-shell evil-tabs evil-surround))))
+    (helm-swoop csv-mode magit web-mode auto-virtualenvwrapper evil-commentary jedi helm-projectile smartparens evil-leader leuven-theme use-package nlinum-relative helm fuzzy flycheck flatui-theme exec-path-from-shell evil-tabs evil-surround))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
