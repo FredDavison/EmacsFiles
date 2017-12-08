@@ -107,10 +107,11 @@
 (use-package nlinum-relative
   :config
   (global-nlinum-relative-mode)
-  (set-face-attribute 'nlinum-relative-current-face nil :inherit
-		      'linum :background "#EDEDED" :foreground
-		      "#9A9A9A" :weight 'normal))
-
+  (set-face-attribute 'nlinum-relative-current-face nil
+		      :inherit 'linum
+		      :background "#EDEDED"
+		      :foreground "#9A9A9A"
+		      :weight 'normal))
 
 (use-package fuzzy)
 
@@ -177,6 +178,14 @@
 ; Remaps                                                                        ;
 ; ----------------------------------------------------------------------------- ;
 
+; Remove space and ret keybindings from evil normal mode
+(defun my-move-key (keymap-from keymap-to key)
+     "Moves key binding from one keymap to another, deleting from the old location. "
+     (define-key keymap-to key (lookup-key keymap-from key))
+     (define-key keymap-from key nil))
+(my-move-key evil-motion-state-map evil-normal-state-map (kbd "RET"))
+(my-move-key evil-motion-state-map evil-normal-state-map " ")
+
 ; Configure # key to work as intended in evil-mode on Mac
 (when (eq system-type 'darwin)
       (global-set-key (kbd "M-3") '(lambda () (interactive) (insert "#")))
@@ -191,13 +200,13 @@
 
 (global-set-key (kbd "C-c b") 'helm-projectile-find-file)
 
-(global-set-key (kbd "C-c n") 'fcd/clear-ui)
+(global-set-key (kbd "C-c n") 'fcd/toggle-ui)
+(define-key evil-normal-state-map " " 'fcd/toggle-ui)
 
 
 ; ----------------------------------------------------------------------------- ;
 ;;; Code                                                                          ;
 ; ----------------------------------------------------------------------------- ;
-
 
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
 
@@ -293,18 +302,31 @@
   "Only use jedi as auto-complete source."
   (setq ac-sources '(ac-source-jedi-direct)))
 
-(defun fcd/clear-ui ()
+; ----------------------------------------------------------------------------- ;
+; UI functions                                                                        ;
+; ----------------------------------------------------------------------------- ;
+(defvar current-ui-state nil
+  "Variable for communicating current ui state to new buffers.")
+
+(defun fcd/set-ui (change-to-state)
   (interactive)
-  (if (eq mode-line-format startup-mode-line-format)
-      (progn
-	(mapcar 'fcd/hide-mode-line (buffer-list))
-	(global-nlinum-relative-mode)
-	(global-nlinum-mode 0)
-	)
-    (progn
-      (mapcar 'fcd/show-mode-line (buffer-list))
-      (global-nlinum-mode t)
-      )))
+  (cond ((equalp change-to-state "clear") (progn (mapcar 'fcd/hide-mode-line (buffer-list))
+						  (global-nlinum-relative-mode)
+						  (global-nlinum-mode 0)
+						  (setq current-ui-state "clear")))
+	((equalp change-to-state "ui-elements-showing") (progn (mapcar 'fcd/show-mode-line (buffer-list))
+								 (global-nlinum-mode t)
+								 (setq current-ui-state "ui-elements-showing")))))
+
+(defun fcd/toggle-ui ()
+  (interactive)
+  (cond ((equalp current-ui-state "ui-elements-showing") (fcd/set-ui "clear"))
+	((equalp current-ui-state "clear") (fcd/set-ui  "ui-elements-showing"))))
+
+(defun fcd/set-ui-to-current-ui-state ()
+  (interactive)
+  (fcd/set-ui current-ui-state)
+  )
 
 (defun fcd/hide-mode-line (buffer)
   (with-current-buffer buffer
@@ -312,14 +334,9 @@
       (progn
 	(setq mode-line-format nil)
 	(window-divider-mode)
-	(setq window-divider-default-bottom-width 15)
+	(setq window-divider-default-places t)
+	(setq window-divider-default-bottom-width 1)
 	(setq window-divider-default-right-width 1)
-	;; (set-face-attribute 'mode-line nil
-	;; 		    :background "dark blue"
-	;; 		    :height 0.1)
-	;; (set-face-attribute 'mode-line-inactive nil
-	;; 		    :background "dim grey"
-	;; 		    :height 0.1)
 	(force-mode-line-update)))))
 
 (defun fcd/show-mode-line (buffer)
@@ -327,14 +344,10 @@
     (when (not (minibufferp buffer))
       (progn
 	(setq mode-line-format startup-mode-line-format)
-	(window-divider-mode 0)
-	;; (set-face-attribute 'mode-line nil
-	;; 		    :background "dark blue"
-	;; 		    :height 0.9)
-	;; (set-face-attribute 'mode-line-inactive nil
-	;; 		    :background "dim grey"
-	;; 		    :height 0.9)
 	(force-mode-line-update)))))
+
+(add-hook 'after-change-major-mode-hook 'fcd/set-ui-to-current-ui-state)
+; ----------------------------------------------------------------------------- ;
 
 (defun fcd/set-pylint-exec ()
   (flycheck-set-checker-executable
@@ -358,10 +371,20 @@
 	(append '("C:/Users/fda/bin/GnuWin32/bin") exec-path))
   )
 
+(defun highlight-selected-window ()
+  "Highlight selected window with a different background color."
+  (walk-windows (lambda (w)
+		  (unless (eq w (selected-window)) 
+		    (with-current-buffer (window-buffer w)
+		      (buffer-face-set '(:background "#fafafa"))))))
+  (buffer-face-set 'default))
+
+(add-hook 'buffer-list-update-hook 'highlight-selected-window)
 
 (require 'recentf)
 (recentf-mode 1)
 (setq recentf-max-menu-items 200)
+(setq recentf-max-saved-items 200)
 (global-set-key "\C-x\ \C-r" 'helm-recentf)
 
 
@@ -382,11 +405,15 @@
 (tool-bar-mode -1)
 (global-hl-line-mode t)
 (set-default 'truncate-lines t)
-(fcd/clear-ui)
+
+(fcd/set-ui "clear")
 
 (set-face-attribute 'mode-line nil
 		    :background "dark blue"
 		    :height 0.9)
+
+(set-face-attribute 'window-divider nil
+		    :foreground "#a9a9a9")
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -398,7 +425,7 @@
     ("15348febfa2266c4def59a08ef2846f6032c0797f001d7b9148f30ace0d08bcf" default)))
  '(package-selected-packages
    (quote
-    (jedi csv-mode helm-swoop magit web-mode auto-virtualenvwrapper evil-commentary helm-projectile smartparens evil-leader leuven-theme use-package nlinum-relative helm fuzzy flycheck flatui-theme exec-path-from-shell evil-tabs evil-surround))))
+    (auto-dim-other-buffers jedi csv-mode helm-swoop magit web-mode auto-virtualenvwrapper evil-commentary helm-projectile smartparens evil-leader leuven-theme use-package nlinum-relative helm fuzzy flycheck flatui-theme exec-path-from-shell evil-tabs evil-surround))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
