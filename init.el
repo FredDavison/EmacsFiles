@@ -178,6 +178,9 @@
   :config
   (global-set-key (kbd "C-s") 'helm-swoop))
 
+(global-set-key (kbd "C-c n") 'fcd/toggle-ui)
+(define-key evil-normal-state-map " " 'fcd/toggle-ui)
+
 
 ; ----------------------------------------------------------------------------- ;
 ;;; Code                                                                          ;
