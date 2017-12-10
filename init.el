@@ -1,7 +1,18 @@
 ;;; init.el ---  FCD config settings for Emacs.
 
+					; TODO:
+					; make dashes not separate words in elisp mode
+					; Modify mode line
+
+					; DONE:
+					; load appearance functions from other file
+					; horizontal divider for OSX (due to bugs in window-divider mode)
+					; Separate functions for show linums and mode line
+					; hide line nums by default - add to clear ui function
+
 ;;; Commentary:
 ; Should work on both OSX and Windows 7 machines
+
 
 ; ----------------------------------------------------------------------------- ;
 ; Packages                                                                      ;
@@ -18,6 +29,7 @@
 (require 'server)
 (unless (server-running-p) (server-start))
 
+(use-package f)
 
 (use-package undo-tree)
 
@@ -28,12 +40,10 @@
   (load-theme 'leuven t)
   )
 
-
 (use-package fuzzy)
 
-
-;(use-package magit)
-
+(when (eq system-type 'darwin)
+  (use-package magit))
 
 ; Initialize environment from the user's shell.
 (use-package exec-path-from-shell
@@ -52,6 +62,7 @@
   (evil-leader/set-key "D=" 'fcd/substitute-after-equal-sign)
   (evil-leader/set-key-for-mode 'python-mode "i" 'fcd/insert-ipdb-break)
   (evil-leader/set-key-for-mode 'python-mode "t" 'fcd/insert-ipdb-break-with-traceback)
+  (evil-leader/set-key "n" 'fcd/toggle-global-nlinum-relative)
   )
 
 
@@ -102,18 +113,19 @@
 (use-package nlinum-relative
   :config
   (global-nlinum-relative-mode)
-  (set-face-attribute 'nlinum-relative-current-face nil :inherit
-		      'linum :background "#EDEDED" :foreground
-		      "#9A9A9A" :weight 'normal))
-
+  (set-face-attribute 'nlinum-relative-current-face nil
+		      :inherit 'linum
+		      :background "#EDEDED"
+		      :foreground "#9A9A9A"
+		      :weight 'normal))
 
 (use-package fuzzy)
 
 
-(use-package evil-tabs
-  :config
-  (global-evil-tabs-mode)
-  )
+;; (use-package evil-tabs
+;;   :config
+;;   (global-evil-tabs-mode)
+;;   )
 
 
 (use-package helm
@@ -145,7 +157,7 @@
   )
 
 (use-package auto-virtualenvwrapper
-  :'config
+  :config
   (add-hook 'python-mode-hook #'auto-virtualenvwrapper-activate))
 
 
@@ -164,55 +176,15 @@
 
 (use-package helm-swoop
   :config
-  (global-set-key (kbd "C-s") 'helm-swoop
-  )
-
-
-; ----------------------------------------------------------------------------- ;
-; Remaps                                                                        ;
-; ----------------------------------------------------------------------------- ;
-
-; Configure # key to work as intended in evil-mode on Mac
-(when (eq system-type 'darwin)
-      (global-set-key (kbd "M-3") '(lambda () (interactive) (insert "#")))
-      (define-key evil-normal-state-map (kbd "M-3" ) 'evil-search-word-backward)
-      (define-key isearch-mode-map (kbd "M-3") '(lambda () (interactive) (isearch-process-search-char ?\#))))
-
-(global-set-key (kbd "C-c f") 'fcd/show-buffer-file-name)
-
-(global-set-key (kbd "C-c i") 'fcd/open-init-file)
-
-(global-set-key (kbd "C-c m s") 'magit-status)
-
-(global-set-key (kbd "C-c b") 'helm-projectile-find-file)
-
-(global-set-key (kbd "C-c C-c"))
-
-(require 'python)
-(define-key python-mode-map (kbd "C-c C-c")
-  (progn
-    (lambda () (interactive) (python-shell-send-buffer t))
-    ))
+  (global-set-key (kbd "C-s") 'helm-swoop))
 
 
 ; ----------------------------------------------------------------------------- ;
 ;;; Code                                                                          ;
 ; ----------------------------------------------------------------------------- ;
 
-(setq ediff-window-setup-function 'ediff-setup-windows-plain)
-
-(setq scroll-margin 1
-      scroll-conservatively 1)
-
-(setq-default scroll-up-aggressively 0.0
-	      scroll-down-aggressively 0.0)
-
-(setq backup-directory-alist '(("." . "~/.emacsbackups")))
-(setq backup-by-copying t)
-
-
-(global-auto-revert-mode)
-(setq auto-revert-interval 0.1)
+(defvar init-location (f-join (getenv "HOME") ".emacs.d"))
+(load (f-join init-location "appearance.el"))
 
 (defun fcd/show-buffer-file-name ()
     (interactive)
@@ -269,7 +241,6 @@
     (evil-append-line 1)
     (insert " ")))
 
-
 (defun fcd/character-position-search-from-line-start (pattern)
   (save-excursion
     (evil-move-beginning-of-line)
@@ -283,7 +254,6 @@
   (interactive)
   (find-file user-init-file)
   )
-
 
 (setq
  python-shell-interpreter "ipython"
@@ -299,10 +269,41 @@
   "Only use jedi as auto-complete source."
   (setq ac-sources '(ac-source-jedi-direct)))
 
+(defun fcd/set-pylint-exec ()
+  (flycheck-set-checker-executable
+   'python-pylint
+   "c:/Users/fda/repositories/TECC/Main/External/Python/Python27/scripts/pylint.exe"))
+
+(when (eq system-type 'windows-nt)
+  (add-hook 'python-mode-hook 'fcd/set-pylint-exec)
+  (set-face-font (quote default) "-outline-Consolas-normal-normal-normal-mono-*-*-*-*-c-*-iso10646-1")
+  (setenv "PATH"
+	  (concat
+	   "C:/Users/fda/repositories/TECC/main/Start;"
+	   "C:/Users/fda/repositories/TECC/main/External/Python/Python27;"
+	   "C:/Users/fda/repositories/TECC/main/External/Python/Python27/Scripts;"
+	   "C:/Users/fda/bin/GnuWin32/bin;"
+	   (getenv "PATH")))
+  (add-to-list
+	'exec-path "C:/Users/fda/repositories/TECC/main/External/Python/Python27/Scripts;")
+  (setq exec-path
+	(append '("C:/Users/fda/bin/GnuWin32/bin") exec-path)))
+
+(setq scroll-margin 0
+      scroll-conservatively 1)
+(setq-default scroll-up-aggressively 0.0
+	      scroll-down-aggressively 0.0)
+
+(setq backup-directory-alist '(("." . "~/.emacsbackups")))
+(setq backup-by-copying t)
+
+(global-auto-revert-mode)
+(setq auto-revert-interval 0.1)
 
 (require 'recentf)
 (recentf-mode 1)
 (setq recentf-max-menu-items 200)
+(setq recentf-max-saved-items 200)
 (global-set-key "\C-x\ \C-r" 'helm-recentf)
 
 
@@ -314,7 +315,13 @@
 (setq inhibit-splash-screen t)
 (setq initial-scratch-message "")
 (setq echo-keystrokes 0.1)
+(setq ediff-window-setup-function 'ediff-setup-windows-plain)
+(setq startup-mode-line-format mode-line-format)
+; Hooks
 
+;; (add-hook 'buffer-list-update-hook 'fcd/highlight-selected-window)
+(remove-hook 'buffer-list-update-hook 'fcd/highlight-selected-window)
+(add-hook 'after-change-major-mode-hook 'fcd/set-ui-to-current-ui-state)
 
 (blink-cursor-mode 0)
 (menu-bar-mode -1)
@@ -322,19 +329,46 @@
 (tool-bar-mode -1)
 (global-hl-line-mode t)
 (set-default 'truncate-lines t)
+(fcd/init-ui)
+
+; ----------------------------------------------------------------------------- ;
+; Remaps                                                                        ;
+; ----------------------------------------------------------------------------- ;
+
+; Remove space and ret keybindings from evil normal mode
+(defun my-move-key (keymap-from keymap-to key)
+     "Moves key binding from one keymap to another, deleting from the old location. "
+     (define-key keymap-to key (lookup-key keymap-from key))
+     (define-key keymap-from key nil))
+(my-move-key evil-motion-state-map evil-normal-state-map (kbd "RET"))
+(my-move-key evil-motion-state-map evil-normal-state-map " ")
+
+; Configure # key to work as intended in evil-mode on Mac
+(when (eq system-type 'darwin)
+      (global-set-key (kbd "M-3") '(lambda () (interactive) (insert "#")))
+      (define-key evil-normal-state-map (kbd "M-3" ) 'evil-search-word-backward)
+      (define-key isearch-mode-map (kbd "M-3") '(lambda () (interactive) (isearch-process-search-char ?\#))))
+
+(global-set-key (kbd "C-c f") 'fcd/show-buffer-file-name)
+
+(global-set-key (kbd "C-c i") 'fcd/open-init-file)
+
+(global-set-key (kbd "C-c m s") 'magit-status)
+
+(global-set-key (kbd "C-c b") 'helm-projectile-find-file)
+
+(require 'python)
+(define-key python-mode-map (kbd "C-c C-c")
+  (progn
+    (lambda () (interactive) (python-shell-send-buffer t))))
+
+(global-set-key (kbd "C-c n") 'fcd/toggle-ui)
+(define-key evil-normal-state-map " " 'fcd/toggle-ui)
 
 
-; Add Gnu versions of find and grep to path. Don't do this in
-; Windows settings because it will overwrite Windows system command
-; find
-(when (eq system-type 'windows-nt)
-  (set-face-font (quote default) "-outline-Consolas-normal-normal-normal-mono-*-*-*-*-c-*-iso10646-1")
-  (setenv "PATH"
-	  (concat "C:/Users/fda/bin/GnuWin32/bin" ";" (getenv "PATH")))
-  (setq exec-path
-	(append '("C:/Users/fda/bin/GnuWin32/bin") exec-path))
-  )
-
+; ----------------------------------------------------------------------------- ;
+; Auto
+; ----------------------------------------------------------------------------- ;
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -346,7 +380,8 @@
     ("15348febfa2266c4def59a08ef2846f6032c0797f001d7b9148f30ace0d08bcf" default)))
  '(package-selected-packages
    (quote
-    (helm-swoop csv-mode magit web-mode auto-virtualenvwrapper evil-commentary jedi helm-projectile smartparens evil-leader leuven-theme use-package nlinum-relative helm fuzzy flycheck flatui-theme exec-path-from-shell evil-tabs evil-surround))))
+    (auto-dim-other-buffers jedi csv-mode helm-swoop magit web-mode auto-virtualenvwrapper evil-commentary helm-projectile smartparens evil-leader leuven-theme use-package nlinum-relative helm fuzzy flycheck flatui-theme exec-path-from-shell evil-tabs evil-surround))))
+
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
