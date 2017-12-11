@@ -6,8 +6,10 @@
 
 ;;; Code:
 
+
 (defvar current-ui-state nil
   "Variable for communicating current ui state to new buffers.")
+
 
 (defun fcd/set-ui (change-to-state)
   (cond
@@ -18,12 +20,15 @@
    ((equalp change-to-state "mode-line-showing")
     (mapcar 'fcd/show-mode-line (buffer-list))
     (setq current-ui-state "mode-line-showing")
-    )))
+    (when (eq system-type 'windows-nt)
+      (redraw-frame)))))
+
 
 (defun fcd/toggle-ui ()
   (interactive)
   (cond ((equalp current-ui-state "mode-line-showing") (fcd/set-ui "no-mode-line"))
 	((equalp current-ui-state "no-mode-line") (fcd/set-ui  "mode-line-showing"))))
+
 
 (defun fcd/toggle-global-nlinum-relative ()
   (interactive)
