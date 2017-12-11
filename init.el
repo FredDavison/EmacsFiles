@@ -366,8 +366,8 @@
     (lambda () (interactive) (python-shell-send-buffer t))))
 
 (global-set-key (kbd "C-c n") 'fcd/toggle-ui)
+(global-set-key (kbd "C-<tab>") 'other-window)
 (define-key evil-normal-state-map " " 'fcd/toggle-ui)
-
 
 ; ----------------------------------------------------------------------------- ;
 ; Auto
