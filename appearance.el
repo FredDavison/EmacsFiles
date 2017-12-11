@@ -46,7 +46,7 @@
 	(window-divider-mode +1)
 	(setq window-divider-default-places t
 	      window-divider-default-bottom-width 1
-	      window-divider-default-right-width 10))
+	      window-divider-default-right-width 1))
       (when (eq system-type 'darwin)
 	(setq mode-line-format "")
 	(set-face-attribute 'mode-line nil :height 0.1)
@@ -67,7 +67,7 @@
 		      :background "dark blue"
 		      :height 0.9)
   (set-face-attribute 'window-divider nil
-		      :foreground "#0000ff")
+		      :foreground "#000000")
   (fcd/set-ui "no-mode-line")
   (global-nlinum-mode 0))
 
