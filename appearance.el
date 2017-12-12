@@ -16,12 +16,13 @@
    ((equalp change-to-state "no-mode-line")
     (mapcar 'fcd/hide-mode-line (buffer-list))
     (setq current-ui-state "no-mode-line")
+    (global-nlinum-mode 0)
     )
    ((equalp change-to-state "mode-line-showing")
     (mapcar 'fcd/show-mode-line (buffer-list))
-    (setq current-ui-state "mode-line-showing")
-    (when (eq system-type 'windows-nt)
-      (redraw-frame)))))
+    (global-nlinum-mode t)
+    (global-nlinum-relative-mode t)
+    (setq current-ui-state "mode-line-showing"))))
 
 
 (defun fcd/toggle-ui ()

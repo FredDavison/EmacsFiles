@@ -151,10 +151,10 @@
   :config
   (projectile-mode t)
   (helm-projectile-on)
-  (setq projectile-globally-ignored-files (append '("*.exe" "*.sdf" "*.pyc" "#.*#") projectile-globally-ignored-files))
-  ;; (setq projectile-globally-ignored-files '("TAGS" "*.exe" "*.sdf" "*.pyc" "\#.*\#"))
+  (setq projectile-globally-ignored-file-suffixes '("pyc" "~" "#" "exe" "sdf"))
   (setq projectile-indexing-method 'alien)
   )
+
 
 (use-package auto-virtualenvwrapper
   :config
@@ -344,6 +344,7 @@
      (define-key keymap-to key (lookup-key keymap-from key))
      (define-key keymap-from key nil))
 (my-move-key evil-motion-state-map evil-normal-state-map (kbd "RET"))
+(my-move-key evil-motion-state-map evil-normal-state-map (kbd "TAB"))
 (my-move-key evil-motion-state-map evil-normal-state-map " ")
 
 ; Configure # key to work as intended in evil-mode on Mac
@@ -353,11 +354,8 @@
       (define-key isearch-mode-map (kbd "M-3") '(lambda () (interactive) (isearch-process-search-char ?\#))))
 
 (global-set-key (kbd "C-c f") 'fcd/show-buffer-file-name)
-
 (global-set-key (kbd "C-c i") 'fcd/open-init-file)
-
 (global-set-key (kbd "C-c m s") 'magit-status)
-
 (global-set-key (kbd "C-c b") 'helm-projectile-find-file)
 
 (require 'python)
@@ -367,6 +365,8 @@
 
 (global-set-key (kbd "C-c n") 'fcd/toggle-ui)
 (global-set-key (kbd "C-<tab>") 'other-window)
+(define-key evil-normal-state-map (kbd "TAB") 'other-window)
+(define-key evil-normal-state-map (kbd "M-3" ) 'evil-search-word-backward)
 (define-key evil-normal-state-map " " 'fcd/toggle-ui)
 
 ; ----------------------------------------------------------------------------- ;
