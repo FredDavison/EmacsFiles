@@ -297,6 +297,12 @@
 (setq-default scroll-up-aggressively 0.0
 	      scroll-down-aggressively 0.0)
 
+(defun fcd/tfs-checkout-and-make-writeable ()
+    (interactive)
+  (shell-command-to-string
+   ;; (replace-regexp-in-string "/" "\\\\" (concat "TF VC status " (buffer-file-name)))))
+   (replace-regexp-in-string "/" "\\\\" (concat "more " (buffer-file-name)))))
+
 (setq backup-directory-alist '(("." . "~/.emacsbackups")))
 (setq backup-by-copying t)
 
@@ -323,7 +329,7 @@
 ; Hooks
 
 ;; (add-hook 'buffer-list-update-hook 'fcd/highlight-selected-window)
-(remove-hook 'buffer-list-update-hook 'fcd/highlight-selected-window)
+;; (remove-hook 'buffer-list-update-hook 'fcd/highlight-selected-window)
 (add-hook 'after-change-major-mode-hook 'fcd/set-ui-to-current-ui-state)
 
 (blink-cursor-mode 0)
@@ -353,6 +359,7 @@
       (define-key evil-normal-state-map (kbd "M-3" ) 'evil-search-word-backward)
       (define-key isearch-mode-map (kbd "M-3") '(lambda () (interactive) (isearch-process-search-char ?\#))))
 
+(global-set-key (kbd "C-c c o") 'fcd/tfs-checkout-and-make-writeable)
 (global-set-key (kbd "C-c f") 'fcd/show-buffer-file-name)
 (global-set-key (kbd "C-c i") 'fcd/open-init-file)
 (global-set-key (kbd "C-c m s") 'magit-status)
