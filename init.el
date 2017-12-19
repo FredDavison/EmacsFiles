@@ -300,10 +300,10 @@
 
 (defun fcd/tfs-checkout-and-make-writeable ()
     (interactive)
-    (message "%s" "TFS: checking out...")
+    (message "%s" "TFS: checking out file...")
     (shell-command
      (replace-regexp-in-string "/" "\\\\" (concat "TF VC checkout " (buffer-file-name))))
-    (read-only-mode 1))
+    (read-only-mode -1))
 
 
 (defun fcd/tfs-status ()
@@ -311,6 +311,14 @@
     (message "%s" "TFS: checking status...")
     (shell-command
      (replace-regexp-in-string "/" "\\\\" (concat "TF VC status " (buffer-file-name)))))
+
+
+(defun fcd/tfs-undo ()
+    (interactive)
+    (message "%s" "TFS: undoing changes to file...")
+    (shell-command
+     (replace-regexp-in-string "/" "\\\\" (concat "TF VC undo " (buffer-file-name))))
+    (read-only-mode 1))
 
 
 (setq backup-directory-alist '(("." . "~/.emacsbackups")))
