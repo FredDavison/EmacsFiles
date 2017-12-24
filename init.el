@@ -112,7 +112,6 @@
 
 (use-package nlinum-relative
   :config
-  (global-nlinum-relative-mode)
   (set-face-attribute 'nlinum-relative-current-face nil
 		      :inherit 'linum
 		      :background "#EDEDED"
