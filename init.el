@@ -93,6 +93,8 @@
 (use-package auto-complete
   :config
   (global-auto-complete-mode t)
+  (ac-set-trigger-key "TAB")
+  (setq ac-use-menu-map t)
   (setq ac-auto-start nil)
   (setq ac-max-width 0.3)
   (setq ac-quick-help-delay 0.25)
@@ -102,9 +104,7 @@
 (use-package jedi
   :config
   (add-hook 'python-mode-hook 'jedi:setup)
-  (add-hook 'python-mode-hook 'set-python-ac-sources)
-  (setq jedi:complete-on-dot t)
-  (setq jedi:get-in-function-call-delay 500))
+  (add-hook 'python-mode-hook 'set-python-ac-sources))
 
 
 (use-package flycheck
@@ -398,6 +398,7 @@
 (define-key evil-normal-state-map (kbd "TAB") 'other-window)
 (define-key evil-normal-state-map (kbd "M-3" ) 'evil-search-word-backward)
 (define-key evil-normal-state-map " " 'fcd/toggle-ui)
+(global-set-key (kbd "C-c c") 'jedi:dot-complete)
 
 ; ----------------------------------------------------------------------------- ;
 ; Auto
