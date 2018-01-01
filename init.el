@@ -100,7 +100,12 @@
   (setq ac-use-menu-map t)
   (setq ac-auto-start nil)
   (setq ac-max-width 0.3)
-  (setq ac-quick-help-delay 0.25))
+  (setq ac-quick-help-delay 0.25)
+  (setq ac-sources '(ac-source-functions
+		     ac-source-variables
+		     ac-source-features
+		     ac-source-symbols
+		     ac-source-words-in-same-mode-buffers)))
 
 
 (use-package jedi
@@ -277,6 +282,8 @@
 (defun set-python-ac-sources ()
   "Only use jedi as auto-complete source."
   (setq ac-sources '(ac-source-jedi-direct)))
+
+
 
 (defun fcd/set-pylint-exec ()
   (flycheck-set-checker-executable
