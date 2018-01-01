@@ -34,7 +34,10 @@
 
 (use-package yasnippet
   :config
-  (yas-global-mode t))
+  (yas-global-mode t)
+  (define-key yas-minor-mode-map (kbd "<tab>") nil)
+  (define-key yas-minor-mode-map (kbd "C-c y") 'yas-expand))
+
 
 (use-package undo-tree)
 
@@ -93,12 +96,11 @@
 (use-package auto-complete
   :config
   (global-auto-complete-mode t)
-  (ac-set-trigger-key "TAB")
+  (global-set-key (kbd  "C-c <tab>")'ac-fuzzy-complete)
   (setq ac-use-menu-map t)
   (setq ac-auto-start nil)
   (setq ac-max-width 0.3)
-  (setq ac-quick-help-delay 0.25)
-  (define-key ac-mode-map (kbd "M-C-i") 'auto-complete))
+  (setq ac-quick-help-delay 0.25))
 
 
 (use-package jedi
@@ -395,10 +397,10 @@
 
 (global-set-key (kbd "C-c n") 'fcd/toggle-ui)
 (global-set-key (kbd "C-<tab>") 'other-window)
-(define-key evil-normal-state-map (kbd "TAB") 'other-window)
+
 (define-key evil-normal-state-map (kbd "M-3" ) 'evil-search-word-backward)
 (define-key evil-normal-state-map " " 'fcd/toggle-ui)
-(global-set-key (kbd "C-c c") 'jedi:dot-complete)
+(define-key python-mode-map (kbd "<tab>") 'jedi:complete)
 
 ; ----------------------------------------------------------------------------- ;
 ; Auto
@@ -414,7 +416,7 @@
     ("15348febfa2266c4def59a08ef2846f6032c0797f001d7b9148f30ace0d08bcf" default)))
  '(package-selected-packages
    (quote
-    (yasnippet auto-dim-other-buffers jedi csv-mode helm-swoop magit web-mode auto-virtualenvwrapper evil-commentary helm-projectile smartparens evil-leader leuven-theme use-package nlinum-relative helm fuzzy flycheck flatui-theme exec-path-from-shell evil-tabs evil-surround))))
+    (ac-helm yasnippet auto-dim-other-buffers jedi csv-mode helm-swoop magit web-mode auto-virtualenvwrapper evil-commentary helm-projectile smartparens evil-leader leuven-theme use-package nlinum-relative helm fuzzy flycheck flatui-theme exec-path-from-shell evil-tabs evil-surround))))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
