@@ -18,8 +18,9 @@
 ; Packages                                                                      ;
 ; ----------------------------------------------------------------------------- ;
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-                         ("marmalade" . "http://marmalade-repo.org/packages/")
                          ("melpa" . "http://melpa.org/packages/")))
+(when (eq system-type 'darwin)
+  (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/")))
 
 (package-initialize)
 
