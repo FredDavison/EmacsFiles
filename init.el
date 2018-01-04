@@ -417,7 +417,6 @@
 
 (define-key evil-normal-state-map (kbd "M-3" ) 'evil-search-word-backward)
 (define-key evil-normal-state-map " " 'fcd/toggle-ui)
-(define-key python-mode-map (kbd "<tab>") 'jedi:complete)
 
 ; ----------------------------------------------------------------------------- ;
 ; Auto
