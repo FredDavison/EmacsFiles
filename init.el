@@ -109,11 +109,7 @@
   (setq ac-auto-start nil)
   (setq ac-max-width 0.3)
   (setq ac-quick-help-delay 0.25)
-  (setq ac-sources '(ac-source-functions
-		     ac-source-variables
-		     ac-source-features
-		     ac-source-symbols
-		     ac-source-words-in-same-mode-buffers)))
+  (add-hook 'emacs-lisp-mode-hook 'set-elisp-ac-sources))
 
 
 (use-package jedi
@@ -291,6 +287,12 @@
   "Only use jedi as auto-complete source."
   (setq ac-sources '(ac-source-jedi-direct)))
 
+(defun set-elisp-ac-sources ()
+  (setq ac-sources '(ac-source-functions
+		     ac-source-variables
+		     ac-source-features
+		     ac-source-symbols
+		     ac-source-words-in-same-mode-buffers)))
 
 
 (defun fcd/set-pylint-exec ()
