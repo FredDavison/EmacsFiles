@@ -16,12 +16,9 @@
    ((equalp change-to-state "no-mode-line")
     (mapcar 'fcd/hide-mode-line (buffer-list))
     (setq current-ui-state "no-mode-line")
-    (global-nlinum-mode 0)
     )
    ((equalp change-to-state "mode-line-showing")
     (mapcar 'fcd/show-mode-line (buffer-list))
-    (global-nlinum-mode t)
-    (global-nlinum-relative-mode t)
     (setq current-ui-state "mode-line-showing"))))
 
 
@@ -31,18 +28,10 @@
 	((equalp current-ui-state "no-mode-line") (fcd/set-ui  "mode-line-showing"))))
 
 
-(defun fcd/toggle-global-nlinum-relative ()
-  (interactive)
-  (if nlinum-mode
-      (global-nlinum-mode 0)
-    (progn
-      (global-nlinum-mode t)
-      (global-nlinum-relative-mode t))))
-
-
 (defun fcd/set-ui-to-current-ui-state ()
   (fcd/set-ui current-ui-state)
   )
+
 
 (defun fcd/hide-mode-line (buffer)
   (with-current-buffer buffer
