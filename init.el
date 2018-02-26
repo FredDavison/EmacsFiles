@@ -108,10 +108,17 @@
 		     ac-source-words-in-same-mode-buffers)))
 
 
+(use-package auto-virtualenvwrapper
+  :config
+  (add-hook 'python-mode-hook #'auto-virtualenvwrapper-activate)
+  (setq venv-location (expand-file-name "~/.virtualenvs")))
+
+
 (use-package jedi
   :config
   (add-hook 'python-mode-hook 'jedi:setup)
-  (add-hook 'python-mode-hook 'set-python-ac-sources))
+  (add-hook 'python-mode-hook 'set-python-ac-sources)
+  (setq python-environment-directory venv-location))
 
 
 (use-package flycheck
@@ -165,11 +172,6 @@
   (setq projectile-globally-ignored-file-suffixes '("pyc" "~" "#" "exe" "sdf"))
   (setq projectile-indexing-method 'alien)
   )
-
-
-(use-package auto-virtualenvwrapper
-  :config
-  (add-hook 'python-mode-hook #'auto-virtualenvwrapper-activate))
 
 
 (when (eq system-type 'darwin)
