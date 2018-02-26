@@ -76,8 +76,8 @@
 
 (use-package avy
   :config
-  (global-set-key (kbd "C-c a c") 'avy-goto-char)
-  (global-set-key (kbd "C-c a C") 'avy-goto-char-2)
+  (global-set-key (kbd "C-c a c") 'avy-goto-char-2)
+  (global-set-key (kbd "C-c a C") 'avy-goto-char)
   (global-set-key (kbd "C-c a t") 'avy-goto-char-timer)
   (global-set-key (kbd "C-c a s") 'avy-goto-symbol-1)
   (global-set-key (kbd "C-c a l") 'avy-goto-line)
