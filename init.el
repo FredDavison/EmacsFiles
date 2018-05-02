@@ -76,13 +76,13 @@
 
 (use-package avy
   :config
-  (global-set-key (kbd "C-c a c") 'avy-goto-char-2)
-  (global-set-key (kbd "C-c a C") 'avy-goto-char)
-  (global-set-key (kbd "C-c a t") 'avy-goto-char-timer)
-  (global-set-key (kbd "C-c a s") 'avy-goto-symbol-1)
-  (global-set-key (kbd "C-c a l") 'avy-goto-line)
-  (global-set-key (kbd "C-c a b") 'avy-goto-line-below)
-  (global-set-key (kbd "C-c a a") 'avy-goto-line-above))
+  (evil-leader/set-key "c" 'avy-goto-char-2)
+  (evil-leader/set-key "C" 'avy-goto-char)
+  (evil-leader/set-key "t" 'avy-goto-char-timer)
+  (evil-leader/set-key "s" 'avy-goto-symbol-1)
+  (evil-leader/set-key "l" 'avy-goto-line)
+  (evil-leader/set-key "b" 'avy-goto-line-below)
+  (evil-leader/set-key "a" 'avy-goto-line-above))
 
 (use-package evil
   :config
