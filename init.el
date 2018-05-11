@@ -18,8 +18,9 @@
 ; Packages                                                                      ;
 ; ----------------------------------------------------------------------------- ;
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-                         ("marmalade" . "http://marmalade-repo.org/packages/")
                          ("melpa" . "http://melpa.org/packages/")))
+(when (eq system-type 'darwin)
+  (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/")))
 
 (package-initialize)
 
@@ -37,7 +38,7 @@
   (yas-global-mode t)
   (define-key yas-minor-mode-map (kbd "<tab>") nil)
   (define-key yas-minor-mode-map (kbd "C-c y") 'yas-expand))
-
+(use-package yasnippet-snippets)
 
 (use-package undo-tree)
 
@@ -74,6 +75,13 @@
   )
 
 
+(use-package avy
+  :config
+  (global-set-key (kbd "C-c a c") 'avy-goto-char)
+  (global-set-key (kbd "C-c a C") 'avy-goto-char-2)
+  (global-set-key (kbd "C-c a t") 'avy-goto-char-timer)
+  (global-set-key (kbd "C-c a l") 'avy-goto-line))
+
 (use-package evil
   :config
   (evil-mode t)
@@ -101,11 +109,7 @@
   (setq ac-auto-start nil)
   (setq ac-max-width 0.3)
   (setq ac-quick-help-delay 0.25)
-  (setq ac-sources '(ac-source-functions
-		     ac-source-variables
-		     ac-source-features
-		     ac-source-symbols
-		     ac-source-words-in-same-mode-buffers)))
+  (add-hook 'emacs-lisp-mode-hook 'set-elisp-ac-sources))
 
 
 (use-package auto-virtualenvwrapper
@@ -285,6 +289,12 @@
   "Only use jedi as auto-complete source."
   (setq ac-sources '(ac-source-jedi-direct)))
 
+(defun set-elisp-ac-sources ()
+  (setq ac-sources '(ac-source-functions
+		     ac-source-variables
+		     ac-source-features
+		     ac-source-symbols
+		     ac-source-words-in-same-mode-buffers)))
 
 
 (defun fcd/set-pylint-exec ()
@@ -409,7 +419,6 @@
 
 (define-key evil-normal-state-map (kbd "M-3" ) 'evil-search-word-backward)
 (define-key evil-normal-state-map " " 'fcd/toggle-ui)
-(define-key python-mode-map (kbd "<tab>") 'jedi:complete)
 
 ; ----------------------------------------------------------------------------- ;
 ; Auto
@@ -425,7 +434,7 @@
     ("15348febfa2266c4def59a08ef2846f6032c0797f001d7b9148f30ace0d08bcf" default)))
  '(package-selected-packages
    (quote
-    (ac-helm yasnippet auto-dim-other-buffers jedi csv-mode helm-swoop magit web-mode auto-virtualenvwrapper evil-commentary helm-projectile smartparens evil-leader leuven-theme use-package nlinum-relative helm fuzzy flycheck flatui-theme exec-path-from-shell evil-tabs evil-surround))))
+    (avy yasnippet-snippets yasnippet-bundle ac-helm yasnippet auto-dim-other-buffers jedi csv-mode helm-swoop magit web-mode auto-virtualenvwrapper evil-commentary helm-projectile smartparens evil-leader leuven-theme use-package nlinum-relative helm fuzzy flycheck flatui-theme exec-path-from-shell evil-tabs evil-surround))))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
