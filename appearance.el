@@ -21,11 +21,24 @@
     (mapcar 'fcd/show-mode-line (buffer-list))
     (setq current-ui-state "mode-line-showing"))))
 
+(defun fcd/set-face-font ()
+  (when (eq system-type 'windows-nt)
+    (set-face-font (quote default) "-outline-Consolas-normal-normal-normal-mono-*-*-*-*-c-*-iso10646-1")))
+
 
 (defun fcd/toggle-ui ()
   (interactive)
   (cond ((equalp current-ui-state "mode-line-showing") (fcd/set-ui "no-mode-line"))
 	((equalp current-ui-state "no-mode-line") (fcd/set-ui  "mode-line-showing"))))
+
+
+(defun fcd/toggle-global-nlinum-relative ()
+  (interactive)
+  (if nlinum-mode
+      (global-nlinum-mode 0)
+    (progn
+      (global-nlinum-mode t)
+      (global-nlinum-relative-mode t))))
 
 
 (defun fcd/set-ui-to-current-ui-state ()

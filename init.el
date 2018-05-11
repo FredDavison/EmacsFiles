@@ -71,6 +71,7 @@
   (evil-leader/set-key-for-mode 'python-mode "i" 'fcd/insert-ipdb-break)
   (evil-leader/set-key-for-mode 'python-mode "t" 'fcd/insert-ipdb-break-with-traceback)
   (evil-leader/set-key "n" 'fcd/toggle-global-nlinum-relative)
+  (evil-leader/set-key "b" 'switch-to-buffer)
   )
 
 
@@ -78,10 +79,10 @@
   :config
   (evil-leader/set-key "c" 'avy-goto-char-2)
   (evil-leader/set-key "C" 'avy-goto-char)
-  (evil-leader/set-key "t" 'avy-goto-char-timer)
+  (evil-leader/set-key "T" 'avy-goto-char-timer)
   (evil-leader/set-key "s" 'avy-goto-symbol-1)
   (evil-leader/set-key "l" 'avy-goto-line)
-  (evil-leader/set-key "b" 'avy-goto-line-below)
+  (evil-leader/set-key "B" 'avy-goto-line-below)
   (evil-leader/set-key "a" 'avy-goto-line-above))
 
 (use-package evil
@@ -128,21 +129,16 @@
   (setq flycheck-indication-mode nil))
 
 
-(use-package nlinum-relative
-  :config
-  (set-face-attribute 'nlinum-relative-current-face nil
-		      :inherit 'linum
-		      :background "#EDEDED"
-		      :foreground "#9A9A9A"
-		      :weight 'normal))
+(use-package nlinum-relative)
+  ;; :config
+  ;; (set-face-attribute 'nlinum-relative-current-face nil
+  ;; 		      :inherit 'linum
+  ;; 		      :background "#EDEDED"
+  ;; 		      :foreground "#9A9A9A"
+  ;; 		      :weight 'normal))
 
 (use-package fuzzy)
 
-
-;; (use-package evil-tabs
-;;   :config
-;;   (global-evil-tabs-mode)
-;;   )
 
 
 (use-package helm
@@ -210,6 +206,7 @@
     (interactive)
   (message (buffer-file-name)))
 
+
 (defun fcd/evil-open-below-return-normal (count)
   (interactive "p")
   (progn
@@ -261,6 +258,7 @@
     (evil-append-line 1)
     (insert " ")))
 
+
 (defun fcd/character-position-search-from-line-start (pattern)
   (save-excursion
     (evil-move-beginning-of-line)
@@ -269,11 +267,13 @@
        (line-beginning-position)
      (match-beginning 0)))
 
+
 (defun fcd/open-init-file ()
   "Open the user's init.el file."
   (interactive)
   (find-file user-init-file)
   )
+
 
 (setq
  python-shell-interpreter "ipython"
@@ -285,9 +285,11 @@
  python-shell-completion-string-code "';'.join(get_ipython().Completer.all_completions('''%s'''))\n"
  )
 
+
 (defun set-python-ac-sources ()
   "Only use jedi as auto-complete source."
   (setq ac-sources '(ac-source-jedi-direct)))
+
 
 (defun set-elisp-ac-sources ()
   (setq ac-sources '(ac-source-functions
@@ -302,9 +304,9 @@
    'python-pylint
    "c:/Users/fda/repositories/TECC/Main/External/Python/Python27/scripts/pylint.exe"))
 
+
 (when (eq system-type 'windows-nt)
   (add-hook 'python-mode-hook 'fcd/set-pylint-exec)
-  (set-face-font (quote default) "-outline-Consolas-normal-normal-normal-mono-*-*-*-*-c-*-iso10646-1")
   (setenv "PATH"
 	  (concat
 	   "C:/Users/fda/repositories/TECC/main/Start;"
@@ -316,6 +318,7 @@
 	'exec-path "C:/Users/fda/repositories/TECC/main/External/Python/Python27/Scripts;")
   (setq exec-path
 	(append '("C:/Users/fda/bin/GnuWin32/bin") exec-path)))
+
 
 (setq scroll-margin 0
       scroll-conservatively 1)
@@ -369,19 +372,30 @@
 (setq echo-keystrokes 0.1)
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
 (setq startup-mode-line-format mode-line-format)
-; Hooks
 
+
+; Hooks
 ;; (add-hook 'buffer-list-update-hook 'fcd/highlight-selected-window)
 ;; (remove-hook 'buffer-list-update-hook 'fcd/highlight-selected-window)
 (add-hook 'after-change-major-mode-hook 'fcd/set-ui-to-current-ui-state)
 
-(blink-cursor-mode 0)
-(menu-bar-mode -1)
-(scroll-bar-mode -1)
-(tool-bar-mode -1)
-(global-hl-line-mode t)
-(set-default 'truncate-lines t)
-(fcd/init-ui)
+; Only do stuff with the UI after frames exist. Frames don't exist when daemon starts
+(add-hook 'after-make-frame-functions 'fcd/set-ui-after-make-frame)
+
+(setq js-indent-level 2)
+
+
+(defun fcd/set-ui-after-make-frame (frame)
+  (progn
+    (blink-cursor-mode 0)
+    (menu-bar-mode -1)
+    (scroll-bar-mode -1)
+    (tool-bar-mode -1)
+    (global-hl-line-mode t)
+    (set-default 'truncate-lines t)
+    (fcd/init-ui)
+    (fcd/set-ui-to-current-ui-state)
+    (fcd/set-face-font)))
 
 ; ----------------------------------------------------------------------------- ;
 ; Remaps                                                                        ;
