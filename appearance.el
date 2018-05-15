@@ -77,7 +77,7 @@
   (set-face-attribute 'window-divider nil
 		      :foreground "#000000")
   (fcd/set-ui "no-mode-line")
-  (global-nlinum-mode 0))
+  (global-nlinum-mode t))
 
 
 ;;; Faces:

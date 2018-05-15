@@ -15,20 +15,44 @@
 
 
 ; ----------------------------------------------------------------------------- ;
-; Packages                                                                      ;
+;;; Code:
 ; ----------------------------------------------------------------------------- ;
-(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-                         ("melpa" . "http://melpa.org/packages/")))
-(when (eq system-type 'darwin)
-  (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/")))
+; Do appearance stuff right away
+(blink-cursor-mode 0)
+(menu-bar-mode -1)
+(scroll-bar-mode -1)
+(tool-bar-mode -1)
+(global-hl-line-mode t)
+(set-default 'truncate-lines t)
+
+
+; ----------------------------------------------------------------------------- ;
+; Packages:
+; ----------------------------------------------------------------------------- ;
 
 (package-initialize)
 
-(package-install 'use-package)
+
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+
+
 (setq use-package-always-ensure t)
+
+
+(require 'package)
+(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
+                         ("melpa" . "http://melpa.org/packages/")))
+
+
+(when (eq system-type 'darwin)
+  (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/")))
+
 
 (require 'server)
 (unless (server-running-p) (server-start))
+
 
 (use-package f)
 
@@ -136,13 +160,13 @@
   (setq flycheck-indication-mode nil))
 
 
-(use-package nlinum-relative)
-  ;; :config
-  ;; (set-face-attribute 'nlinum-relative-current-face nil
-  ;; 		      :inherit 'linum
-  ;; 		      :background "#EDEDED"
-  ;; 		      :foreground "#9A9A9A"
-  ;; 		      :weight 'normal))
+(use-package nlinum-relative
+  :config
+  (set-face-attribute 'nlinum-relative-current-face nil
+  		      :inherit 'linum
+  		      :background "#EDEDED"
+  		      :foreground "#9A9A9A"
+  		      :weight 'normal))
 
 (use-package fuzzy)
 
@@ -344,11 +368,14 @@
 
 
 (defun fcd/tfs-undo ()
-    (interactive)
-    (message "%s" "TFS: undoing changes to file...")
-    (shell-command
-     (replace-regexp-in-string "/" "\\\\" (concat "TF VC undo " (buffer-file-name))))
-    (read-only-mode 1))
+  (interactive)
+  (if (yes-or-no-p (message "Really revert changes to %s and undo check-out?" (buffer-file-name)))
+      (progn
+	(shell-command
+	 (replace-regexp-in-string "/" "\\\\" (concat "TF VC undo " (buffer-file-name))))
+	(message "%s" "TFS: undoing changes to file...")
+	(read-only-mode 1))
+    (message "%s" "Undo aborted.")))
 
 
 (setq backup-directory-alist '(("." . "~/.emacsbackups")))
@@ -374,20 +401,17 @@
 (setq echo-keystrokes 0.1)
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
 (setq startup-mode-line-format mode-line-format)
-
+(setq ring-bell-function 'ignore)
 
 ; Hooks
 ;; (add-hook 'buffer-list-update-hook 'fcd/highlight-selected-window)
 ;; (remove-hook 'buffer-list-update-hook 'fcd/highlight-selected-window)
 (add-hook 'after-change-major-mode-hook 'fcd/set-ui-to-current-ui-state)
 
-; Only do stuff with the UI after frames exist. Frames don't exist when daemon starts
-(add-hook 'after-make-frame-functions 'fcd/set-ui-after-make-frame)
-
 (setq js-indent-level 2)
 
 
-(defun fcd/set-ui-after-make-frame (frame)
+(defun fcd/set-ui-after-make-frame ()
   (progn
     (blink-cursor-mode 0)
     (menu-bar-mode -1)
@@ -398,6 +422,12 @@
     (fcd/init-ui)
     (fcd/set-ui-to-current-ui-state)
     (fcd/set-face-font)))
+
+; Only do stuff with the UI after frames exist. Frames don't exist when daemon starts
+; Run it as well for the case when the frame is already created before hook is added
+(fcd/set-ui-after-make-frame)
+(add-hook 'after-make-frame-functions 'fcd/set-ui-after-make-frame)
+
 
 ; ----------------------------------------------------------------------------- ;
 ; Remaps                                                                        ;
@@ -452,7 +482,7 @@
     ("15348febfa2266c4def59a08ef2846f6032c0797f001d7b9148f30ace0d08bcf" default)))
  '(package-selected-packages
    (quote
-    (avy yasnippet-snippets yasnippet-bundle ac-helm yasnippet auto-dim-other-buffers jedi csv-mode helm-swoop magit web-mode auto-virtualenvwrapper evil-commentary helm-projectile smartparens evil-leader leuven-theme use-package nlinum-relative helm fuzzy flycheck flatui-theme exec-path-from-shell evil-tabs evil-surround))))
+    (esup avy yasnippet-snippets yasnippet-bundle ac-helm yasnippet auto-dim-other-buffers jedi csv-mode helm-swoop magit web-mode auto-virtualenvwrapper evil-commentary helm-projectile smartparens evil-leader leuven-theme use-package nlinum-relative helm fuzzy flycheck flatui-theme exec-path-from-shell evil-tabs evil-surround))))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
