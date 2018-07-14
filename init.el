@@ -93,7 +93,7 @@
   (evil-leader/set-key "d=" 'fcd/substitute-before-equal-sign)
   (evil-leader/set-key "D=" 'fcd/substitute-after-equal-sign)
   (evil-leader/set-key-for-mode 'python-mode "i" 'fcd/insert-ipdb-break)
-  (evil-leader/set-key-for-mode 'python-mode "t" 'fcd/insert-ipdb-break-with-traceback)
+  (evil-leader/set-key-for-mode 'python-mode "t" 'fcd/insert-ipdb-try-clause)
   (evil-leader/set-key "n" 'fcd/toggle-global-nlinum-relative)
   (evil-leader/set-key "b" 'switch-to-buffer)
   )
@@ -262,6 +262,20 @@
     (insert "import traceback; traceback.print_exc();")
     (fcd/insert-ipdb-break)
     (evil-normal-state)))
+
+
+(defun fcd/insert-ipdb-try-clause ()
+  (interactive)
+  (progn
+    (evil-insert-line 0)
+    (insert (kbd "TAB"))
+    (evil-open-above 0)
+    (insert "try:")
+    (evil-next-line)
+    (evil-open-below 0)
+    (python-indent-dedent-line-backspace 4)
+    (insert "except:")
+    (fcd/insert-ipdb-break-with-traceback)))
 
 
 (defun fcd/substitute-before-equal-sign ()
@@ -482,7 +496,7 @@
     ("15348febfa2266c4def59a08ef2846f6032c0797f001d7b9148f30ace0d08bcf" default)))
  '(package-selected-packages
    (quote
-    (esup avy yasnippet-snippets yasnippet-bundle ac-helm yasnippet auto-dim-other-buffers jedi csv-mode helm-swoop magit web-mode auto-virtualenvwrapper evil-commentary helm-projectile smartparens evil-leader leuven-theme use-package nlinum-relative helm fuzzy flycheck flatui-theme exec-path-from-shell evil-tabs evil-surround))))
+    (command-log-mode esup avy yasnippet-snippets yasnippet-bundle ac-helm yasnippet auto-dim-other-buffers jedi csv-mode helm-swoop magit web-mode auto-virtualenvwrapper evil-commentary helm-projectile smartparens evil-leader leuven-theme use-package nlinum-relative helm fuzzy flycheck flatui-theme exec-path-from-shell evil-tabs evil-surround))))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
