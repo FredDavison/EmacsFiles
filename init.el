@@ -132,11 +132,9 @@
 (use-package auto-complete
   :config
   (global-auto-complete-mode t)
-  (global-set-key (kbd  "C-c <tab>")'ac-fuzzy-complete)
   (setq ac-use-menu-map t)
   (setq ac-auto-start nil)
   (setq ac-max-width 0.3)
-  (setq ac-quick-help-delay 0.25)
   (add-hook 'emacs-lisp-mode-hook 'set-elisp-ac-sources))
 
 
@@ -149,7 +147,7 @@
 (use-package jedi
   :config
   (add-hook 'python-mode-hook 'jedi:setup)
-  (add-hook 'python-mode-hook 'set-python-ac-sources)
+  (global-set-key (kbd  "C-c <tab>") 'jedi:complete)
   (setq python-environment-directory venv-location))
 
 
