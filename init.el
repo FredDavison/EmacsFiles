@@ -131,7 +131,7 @@
   :config
   (global-auto-complete-mode t)
   (setq ac-use-menu-map t)
-  (setq ac-auto-start nil)
+  (setq ac-auto-start 4)
   (setq ac-max-width 0.3)
   (add-hook 'emacs-lisp-mode-hook 'set-elisp-ac-sources))
 
@@ -144,6 +144,8 @@
 
 (use-package jedi
   :config
+  ;; Use C-c <tab> to activate completion menu.
+  ;; Use C-s to activate fuzzy search in completion menu
   (add-hook 'python-mode-hook 'jedi:setup)
   (global-set-key (kbd  "C-c <tab>") 'jedi:complete)
   (setq python-environment-directory venv-location))
