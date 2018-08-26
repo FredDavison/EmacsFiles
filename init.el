@@ -72,8 +72,6 @@
   (load-theme 'leuven t)
   )
 
-(use-package fuzzy)
-
 (when (eq system-type 'darwin)
   (use-package magit))
 
