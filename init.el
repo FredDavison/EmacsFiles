@@ -159,13 +159,8 @@
   (setq flycheck-indication-mode nil))
 
 
-(use-package nlinum-relative
-  :config
-  (set-face-attribute 'nlinum-relative-current-face nil
-  		      :inherit 'linum
-  		      :background "#EDEDED"
-  		      :foreground "#9A9A9A"
-  		      :weight 'normal))
+(use-package nlinum-relative)
+
 
 (use-package fuzzy)
 

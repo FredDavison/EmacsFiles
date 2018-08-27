@@ -7,6 +7,7 @@
 ;;; Code:
 
 
+
 (defvar current-ui-state nil
   "Variable for communicating current ui state to new buffers.")
 
@@ -71,14 +72,38 @@
 
 
 (defun fcd/init-ui ()
-  (set-face-attribute 'mode-line nil
-		      :background "dark blue"
-		      :height 0.9)
-  (set-face-attribute 'window-divider nil
-		      :foreground "#000000")
-  (fcd/set-ui "no-mode-line")
-  (global-nlinum-mode t)
-  (global-nlinum-relative-mode t))
+  (interactive)
+    (defconst fcd-ui-background    "white")
+    (defconst fcd-ui-foreground  "#58C0E8")
+    (defconst fcd-ui-tertiary  "#edf0f2")
+    (set-face-attribute 'mode-line nil
+			:background fcd-ui-tertiary
+			:foreground fcd-ui-foreground
+			:height 0.9
+			:box fcd-ui-tertiary)
+    (set-face-attribute 'mode-line-inactive nil
+			:background "white"
+			:foreground fcd-ui-tertiary
+			:height 0.9
+			:box fcd-ui-tertiary)
+    (set-face-attribute 'window-divider nil
+			:foreground fcd-ui-tertiary) ;; not sure what this does - Windows only?
+    (set-face-foreground 'vertical-border fcd-ui-tertiary)
+    (set-face-background 'vertical-border (face-background 'vertical-border))
+    (set-face-attribute 'linum nil
+			:background fcd-ui-tertiary
+			:foreground fcd-ui-foreground)
+    (set-face-attribute 'nlinum-relative-current-face nil
+			:inherit 'linum
+			:background fcd-ui-tertiary
+			:foreground fcd-ui-foreground
+			:weight 'normal)
+    (set-face-attribute 'mode-line-buffer-id nil
+			:foreground "black"
+			:weight 'light)
+    (fcd/set-ui "no-mode-line")
+    (global-nlinum-mode t)
+    (global-nlinum-relative-mode t))
 
 
 ;;; Faces:
