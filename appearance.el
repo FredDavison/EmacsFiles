@@ -6,6 +6,10 @@
 
 ;;; Code:
 
+(defconst fcd-ui-background    "white")
+(defconst fcd-ui-foreground  "#58C0E8")
+(defconst fcd-ui-tertiary  "#edf0f2")
+(defconst fcd-ui-tertiary-strong  "##bdbfc1")
 
 
 (defvar current-ui-state nil
@@ -17,10 +21,19 @@
    ((equalp change-to-state "no-mode-line")
     (mapcar 'fcd/hide-mode-line (buffer-list))
     (setq current-ui-state "no-mode-line")
+    (set-face-attribute 'mode-line nil
+			:box fcd-ui-tertiary-strong)
+    (set-face-attribute 'mode-line-inactive nil
+			:box fcd-ui-tertiary-strong)
     )
    ((equalp change-to-state "mode-line-showing")
     (mapcar 'fcd/show-mode-line (buffer-list))
-    (setq current-ui-state "mode-line-showing"))))
+    (setq current-ui-state "mode-line-showing")
+    (set-face-attribute 'mode-line nil
+			:box fcd-ui-tertiary)
+    (set-face-attribute 'mode-line-inactive nil
+			:box fcd-ui-tertiary)
+    )))
 
 (defun fcd/set-face-font ()
   (when (eq system-type 'windows-nt)
@@ -36,10 +49,15 @@
 (defun fcd/toggle-global-nlinum-relative ()
   (interactive)
   (if nlinum-mode
-      (global-nlinum-mode 0)
+      (progn
+	(global-nlinum-mode 0)
+	(set-face-foreground 'vertical-border fcd-ui-tertiary-strong)
+	)
     (progn
       (global-nlinum-mode t)
-      (global-nlinum-relative-mode t))))
+      (global-nlinum-relative-mode t)
+      (set-face-foreground 'vertical-border fcd-ui-tertiary)
+      )))
 
 
 (defun fcd/set-ui-to-current-ui-state ()
@@ -73,22 +91,19 @@
 
 (defun fcd/init-ui ()
   (interactive)
-    (defconst fcd-ui-background    "white")
-    (defconst fcd-ui-foreground  "#58C0E8")
-    (defconst fcd-ui-tertiary  "#edf0f2")
     (set-face-attribute 'mode-line nil
 			:background fcd-ui-tertiary
 			:foreground fcd-ui-foreground
 			:height 0.9
-			:box fcd-ui-tertiary)
+			:box fcd-ui-tertiary-strong)
     (set-face-attribute 'mode-line-inactive nil
 			:background "white"
 			:foreground fcd-ui-tertiary
 			:height 0.9
-			:box fcd-ui-tertiary)
+			:box fcd-ui-tertiary-strong)
     (set-face-attribute 'window-divider nil
-			:foreground fcd-ui-tertiary) ;; not sure what this does - Windows only?
-    (set-face-foreground 'vertical-border fcd-ui-tertiary)
+			:foreground fcd-ui-tertiary-strong) ;; not sure what this does - Windows only?
+    (set-face-foreground 'vertical-border fcd-ui-tertiary-strong)
     (set-face-background 'vertical-border (face-background 'vertical-border))
     (set-face-attribute 'linum nil
 			:background fcd-ui-tertiary
