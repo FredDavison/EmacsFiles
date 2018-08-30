@@ -112,8 +112,6 @@
   :config
   (evil-mode t)
   (setq evil-symbol-word-search (quote symbol))
-  (setq evil-normal-state-modes (append evil-motion-state-modes evil-normal-state-modes))
-  (setq evil-motion-state-modes nil)
   )
 
 
