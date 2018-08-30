@@ -95,6 +95,7 @@
   (evil-leader/set-key-for-mode 'python-mode "t" 'fcd/insert-ipdb-break-with-traceback)
   (evil-leader/set-key "n" 'fcd/toggle-global-nlinum-relative)
   (evil-leader/set-key "b" 'switch-to-buffer)
+  (evil-leader/set-key "C" 'flycheck-clear)
   )
 
 
@@ -418,6 +419,7 @@
     (fcd/init-ui)
     (fcd/set-ui-to-current-ui-state)
     (fcd/set-face-font)))
+
 
 ; Only do stuff with the UI after frames exist. Frames don't exist when daemon starts
 ; Run it as well for the case when the frame is already created before hook is added
