@@ -98,16 +98,6 @@
   )
 
 
-(use-package avy
-  :config
-  (evil-leader/set-key "c" 'avy-goto-char-2)
-  (evil-leader/set-key "C" 'avy-goto-char)
-  (evil-leader/set-key "T" 'avy-goto-char-timer)
-  (evil-leader/set-key "s" 'avy-goto-symbol-1)
-  (evil-leader/set-key "l" 'avy-goto-line)
-  (evil-leader/set-key "B" 'avy-goto-line-below)
-  (evil-leader/set-key "a" 'avy-goto-line-above))
-
 (use-package evil
   :config
   (evil-mode t)
