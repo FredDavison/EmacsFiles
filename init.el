@@ -96,6 +96,7 @@
   (evil-leader/set-key "n" 'fcd/toggle-global-nlinum-relative)
   (evil-leader/set-key "b" 'switch-to-buffer)
   (evil-leader/set-key "C" 'flycheck-clear)
+  (evil-leader/set-key "3" 'fcd/duplicate-window-vertically)
   )
 
 
@@ -419,6 +420,11 @@
     (fcd/init-ui)
     (fcd/set-ui-to-current-ui-state)
     (fcd/set-face-font)))
+
+(defun fcd/duplicate-window-vertically ()
+  (delete-other-windows)
+  (split-window-right)
+  )
 
 
 ; Only do stuff with the UI after frames exist. Frames don't exist when daemon starts
