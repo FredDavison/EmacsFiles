@@ -24,7 +24,13 @@
 (tool-bar-mode -1)
 (global-hl-line-mode t)
 (set-default 'truncate-lines t)
+(setq-default indent-tabs-mode nil)
 
+(autoload 'dired-jump "dired-x"
+  "Jump to Dired buffer corresponding to current buffer." t)
+     
+(autoload 'dired-jump-other-window "dired-x"
+  "Like \\[dired-jump] (dired-jump) but in other window." t)
 
 ; ----------------------------------------------------------------------------- ;
 ; Packages:
@@ -96,6 +102,7 @@
   (evil-leader/set-key-for-mode 'python-mode "t" 'fcd/insert-ipdb-break-with-traceback)
   (evil-leader/set-key "n" 'fcd/toggle-global-nlinum-relative)
   (evil-leader/set-key "b" 'switch-to-buffer)
+  (evil-leader/set-key "C" 'flycheck-clear)
   )
 
 
@@ -142,7 +149,11 @@
 (use-package auto-virtualenvwrapper
   :config
   (add-hook 'python-mode-hook #'auto-virtualenvwrapper-activate)
-  (setq venv-location (expand-file-name "~/.virtualenvs")))
+  (if (eq system-type 'windows-nt)
+      (setq venv-location (expand-file-name "/Anaconda3/envs"))
+    (setq venv-location (expand-file-name "~/.virtualenvs")))
+  (setq python-environment-directory venv-location)
+  )
 
 
 (use-package jedi
@@ -328,7 +339,8 @@
 (defun fcd/set-pylint-exec ()
   (flycheck-set-checker-executable
    'python-pylint
-   "c:/Users/fda/repositories/TECC/Main/External/Python/Python27/scripts/pylint.exe"))
+   (concat venv-current-dir (file-name-as-directory "scripts") "pylint.exe")))
+   ;; "c:/Users/fda/repositories/TECC/Main/External/Python/Python27/scripts/pylint.exe"))
 
 
 (when (eq system-type 'windows-nt)
@@ -408,7 +420,7 @@
 ;; (remove-hook 'buffer-list-update-hook 'fcd/highlight-selected-window)
 (add-hook 'after-change-major-mode-hook 'fcd/set-ui-to-current-ui-state)
 
-(setq js-indent-level 2)
+(setq js-indent-level 4)
 
 
 (defun fcd/set-ui-after-make-frame ()
@@ -468,6 +480,7 @@
 
 (global-set-key (kbd "C-c SPC") 'redraw-display)
 
+(define-key global-map (kbd "C-x C-j" )'dired-jump)
 ; ----------------------------------------------------------------------------- ;
 ; Auto
 ; ----------------------------------------------------------------------------- ;
