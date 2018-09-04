@@ -78,8 +78,6 @@
   (load-theme 'leuven t)
   )
 
-(use-package fuzzy)
-
 (when (eq system-type 'darwin)
   (use-package magit))
 
@@ -99,6 +97,7 @@
   (evil-leader/set-key "d=" 'fcd/substitute-before-equal-sign)
   (evil-leader/set-key "D=" 'fcd/substitute-after-equal-sign)
   (evil-leader/set-key-for-mode 'python-mode "i" 'fcd/insert-ipdb-break)
+  (evil-leader/set-key-for-mode 'python-mode "T" 'fcd/insert-ipdb-try-clause)
   (evil-leader/set-key-for-mode 'python-mode "t" 'fcd/insert-ipdb-break-with-traceback)
   (evil-leader/set-key "n" 'fcd/toggle-global-nlinum-relative)
   (evil-leader/set-key "b" 'switch-to-buffer)
@@ -106,22 +105,10 @@
   )
 
 
-(use-package avy
-  :config
-  (evil-leader/set-key "c" 'avy-goto-char-2)
-  (evil-leader/set-key "C" 'avy-goto-char)
-  (evil-leader/set-key "T" 'avy-goto-char-timer)
-  (evil-leader/set-key "s" 'avy-goto-symbol-1)
-  (evil-leader/set-key "l" 'avy-goto-line)
-  (evil-leader/set-key "B" 'avy-goto-line-below)
-  (evil-leader/set-key "a" 'avy-goto-line-above))
-
 (use-package evil
   :config
   (evil-mode t)
   (setq evil-symbol-word-search (quote symbol))
-  (setq evil-normal-state-modes (append evil-motion-state-modes evil-normal-state-modes))
-  (setq evil-motion-state-modes nil)
   )
 
 
@@ -138,11 +125,9 @@
 (use-package auto-complete
   :config
   (global-auto-complete-mode t)
-  (global-set-key (kbd  "C-c <tab>")'ac-fuzzy-complete)
   (setq ac-use-menu-map t)
-  (setq ac-auto-start nil)
+  (setq ac-auto-start 4)
   (setq ac-max-width 0.3)
-  (setq ac-quick-help-delay 0.25)
   (add-hook 'emacs-lisp-mode-hook 'set-elisp-ac-sources))
 
 
@@ -158,8 +143,10 @@
 
 (use-package jedi
   :config
+  ;; Use C-c <tab> to activate completion menu.
+  ;; Use C-s to activate fuzzy search in completion menu
   (add-hook 'python-mode-hook 'jedi:setup)
-  (add-hook 'python-mode-hook 'set-python-ac-sources)
+  (global-set-key (kbd  "C-c <tab>") 'jedi:complete)
   (setq python-environment-directory venv-location))
 
 
@@ -171,13 +158,8 @@
   (setq flycheck-indication-mode nil))
 
 
-(use-package nlinum-relative
-  :config
-  (set-face-attribute 'nlinum-relative-current-face nil
-  		      :inherit 'linum
-  		      :background "#EDEDED"
-  		      :foreground "#9A9A9A"
-  		      :weight 'normal))
+(use-package nlinum-relative)
+
 
 (use-package fuzzy)
 
@@ -273,6 +255,20 @@
     (insert "import traceback; traceback.print_exc();")
     (fcd/insert-ipdb-break)
     (evil-normal-state)))
+
+
+(defun fcd/insert-ipdb-try-clause ()
+  (interactive)
+  (progn
+    (evil-insert-line 0)
+    (insert (kbd "TAB"))
+    (evil-open-above 0)
+    (insert "try:")
+    (evil-next-line)
+    (evil-open-below 0)
+    (python-indent-dedent-line-backspace 4)
+    (insert "except:")
+    (fcd/insert-ipdb-break-with-traceback)))
 
 
 (defun fcd/substitute-before-equal-sign ()
@@ -435,6 +431,7 @@
     (fcd/set-ui-to-current-ui-state)
     (fcd/set-face-font)))
 
+
 ; Only do stuff with the UI after frames exist. Frames don't exist when daemon starts
 ; Run it as well for the case when the frame is already created before hook is added
 (fcd/set-ui-after-make-frame)
@@ -495,7 +492,7 @@
     ("15348febfa2266c4def59a08ef2846f6032c0797f001d7b9148f30ace0d08bcf" default)))
  '(package-selected-packages
    (quote
-    (esup avy yasnippet-snippets yasnippet-bundle ac-helm yasnippet auto-dim-other-buffers jedi csv-mode helm-swoop magit web-mode auto-virtualenvwrapper evil-commentary helm-projectile smartparens evil-leader leuven-theme use-package nlinum-relative helm fuzzy flycheck flatui-theme exec-path-from-shell evil-tabs evil-surround))))
+    (command-log-mode esup avy yasnippet-snippets yasnippet-bundle ac-helm yasnippet auto-dim-other-buffers jedi csv-mode helm-swoop magit web-mode auto-virtualenvwrapper evil-commentary helm-projectile smartparens evil-leader leuven-theme use-package nlinum-relative helm fuzzy flycheck flatui-theme exec-path-from-shell evil-tabs evil-surround))))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
