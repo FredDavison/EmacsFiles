@@ -33,17 +33,17 @@
 (package-initialize)
 
 
+(require 'package)
+(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
+                         ("melpa" . "http://melpa.org/packages/")))
+
+
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
 
 
 (setq use-package-always-ensure t)
-
-
-(require 'package)
-(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-                         ("melpa" . "http://melpa.org/packages/")))
 
 
 (when (eq system-type 'darwin)
@@ -72,7 +72,7 @@
   (load-theme 'leuven t)
   )
 
-(when (eq system-type 'darwin)
+(when (or (eq system-type 'darwin) (eq system-type 'gnu/linux))
   (use-package magit))
 
 ; Initialize environment from the user's shell.
