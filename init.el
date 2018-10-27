@@ -36,9 +36,15 @@
 ; Packages:
 ; ----------------------------------------------------------------------------- ;
 
+(require 'server)
+(unless (server-running-p) (server-start))
+
+
 (require 'package)
 
+
 (package-initialize)
+
 
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
                          ("melpa" . "http://melpa.org/packages/")))
@@ -52,11 +58,8 @@
   (package-refresh-contents)
   (package-install 'use-package))
 
+
 (setq use-package-always-ensure t)
-
-
-(require 'server)
-(unless (server-running-p) (server-start))
 
 
 (use-package f)
