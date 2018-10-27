@@ -344,15 +344,7 @@
 		     ac-source-words-in-same-mode-buffers)))
 
 
-(defun fcd/set-pylint-exec ()
-  (flycheck-set-checker-executable
-   'python-pylint
-   (concat venv-current-dir (file-name-as-directory "scripts") "pylint.exe")))
-   ;; "c:/Users/fda/repositories/TECC/Main/External/Python/Python27/scripts/pylint.exe"))
-
-
 (when (eq system-type 'windows-nt)
-  (add-hook 'python-mode-hook 'fcd/set-pylint-exec)
   (setenv "PATH"
 	  (concat
 	   "C:/Users/fda/repositories/TECC/main/Start;"
