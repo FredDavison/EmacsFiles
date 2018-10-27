@@ -10,6 +10,7 @@
 (defconst fcd-ui-foreground  "#58C0E8")
 (defconst fcd-ui-tertiary  "#edf0f2")
 (defconst fcd-ui-tertiary-strong  "##bdbfc1")
+(defconst fcd-ui-mode-line-inactive "grey87")
 
 
 (defvar current-ui-state nil
@@ -97,7 +98,7 @@
 			:height 0.9
 			:box fcd-ui-tertiary-strong)
     (set-face-attribute 'mode-line-inactive nil
-			:background "white"
+			:background fcd-ui-mode-line-inactive
 			:foreground fcd-ui-tertiary
 			:height 0.9
 			:box fcd-ui-tertiary-strong)
