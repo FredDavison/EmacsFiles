@@ -320,17 +320,24 @@
   "Give user a choice of venv containing directories before selecting venv."
   (interactive)
   (when (eq system-type 'windows-nt)
-    (let ((venv-locations `("c:/anaconda3/envs" ,(expand-file-name "~/.virtualenvs")))
+    (let ((venv-locations `(,(expand-file-name "~/.virtualenvs") "c:/anaconda3/envs"))
           (venv-choice (read-char-choice
-                        (message "Which venv root location? (a) or (b)\n%s"
-                                 (string-join
-                                  (append venv-locations '("\n")) "\n"))
+                        (message "Which venv root location?\na) %s\nb) %s"
+                                 (car venv-locations) (car (cdr venv-locations)))
                         '(?a ?b))))
-        (cond
-         ((eq (char-to-string venv-choice) "a") (setq venv-location (nth 0 venv-locations)))
-         ((eq (char-to-string venv-choice) "b") (setq venv-location (nth 1 venv-locations))))))
-  (message "venv location: %s" venv-location)
-  (venv-workon))
+      (cond
+       ((eq venv-choice 97)
+        (progn
+          (message "a selected")
+          (setq venv-location (nth 0 venv-locations))))
+       ((eq venv-choice 98)
+        (progn
+          (message "a selected")
+          (setq venv-location (nth 1 venv-locations))))))
+    )
+  (progn
+    (message "venv location: %s" venv-location)
+    (venv-workon)))
 
 
 (setq
