@@ -129,7 +129,10 @@
 (use-package auto-virtualenvwrapper
   :config
   (add-hook 'python-mode-hook #'auto-virtualenvwrapper-activate)
-  (setq venv-location (expand-file-name "~/.virtualenvs")))
+  (cond ((eq system-type 'darwin2)
+	 (setq venv-location (expand-file-name "~/.virtualenvs")))
+	((eq system-type 'windows-nt)
+	 (setq venv-location `("C:/Anaconda3/envs" ,(expand-file-name "~/.virtualenvs"))))))
 
 
 (use-package jedi
