@@ -13,6 +13,11 @@
 ;;; Commentary:
 ; Should work on both OSX and Windows 7 machines
 
+; TODO get pylint working with venvs
+; TODO get autovenv working nicely with projects
+; TODO get server working on Windows
+; TODO get jedi auto complete working properly
+
 
 ; ----------------------------------------------------------------------------- ;
 ;;; Code:
@@ -145,8 +150,9 @@
 
 (use-package auto-virtualenvwrapper
   :config
-  (add-hook 'python-mode-hook #'auto-virtualenvwrapper-activate)
-  (setq venv-location (expand-file-name "~/.virtualenvs")))
+  (when (not (eq system-type 'windows-nt))
+    (add-hook 'python-mode-hook #'auto-virtualenvwrapper-activate)
+    (setq venv-location (expand-file-name "~/.virtualenvs"))))
 
 
 (use-package jedi
