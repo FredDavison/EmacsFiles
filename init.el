@@ -24,7 +24,13 @@
 (tool-bar-mode -1)
 (global-hl-line-mode t)
 (set-default 'truncate-lines t)
+(setq-default indent-tabs-mode nil)
 
+(autoload 'dired-jump "dired-x"
+  "Jump to Dired buffer corresponding to current buffer." t)
+     
+(autoload 'dired-jump-other-window "dired-x"
+  "Like \\[dired-jump] (dired-jump) but in other window." t)
 
 ; ----------------------------------------------------------------------------- ;
 ; Packages:
@@ -54,6 +60,15 @@
 
 
 (use-package f)
+
+
+(use-package markdown-mode
+  :ensure t
+  :commands (markdown-mode gfm-mode)
+  :mode (("README\\.md\\'" . gfm-mode)
+         ("\\.md\\'" . markdown-mode)
+         ("\\.markdown\\'" . markdown-mode))
+  :init (setq markdown-command "pandoc"))
 
 
 (use-package yasnippet
@@ -128,7 +143,8 @@
 (use-package auto-virtualenvwrapper
   :config
   (add-hook 'python-mode-hook #'auto-virtualenvwrapper-activate)
-  (cond ((eq system-type 'darwin2)
+
+  (cond ((eq system-type 'darwin)
 	 (setq venv-location (expand-file-name "~/.virtualenvs")))
 	((eq system-type 'windows-nt)
 	 (setq venv-location `("C:/Anaconda3/envs" ,(expand-file-name "~/.virtualenvs"))))))
@@ -328,7 +344,8 @@
 (defun fcd/set-pylint-exec ()
   (flycheck-set-checker-executable
    'python-pylint
-   "c:/Users/fda/repositories/TECC/Main/External/Python/Python27/scripts/pylint.exe"))
+   (concat venv-current-dir (file-name-as-directory "scripts") "pylint.exe")))
+   ;; "c:/Users/fda/repositories/TECC/Main/External/Python/Python27/scripts/pylint.exe"))
 
 
 (when (eq system-type 'windows-nt)
@@ -408,7 +425,7 @@
 ;; (remove-hook 'buffer-list-update-hook 'fcd/highlight-selected-window)
 (add-hook 'after-change-major-mode-hook 'fcd/set-ui-to-current-ui-state)
 
-(setq js-indent-level 2)
+(setq js-indent-level 4)
 
 
 (defun fcd/set-ui-after-make-frame ()
@@ -474,6 +491,7 @@
 
 (global-set-key (kbd "C-c SPC") 'redraw-display)
 
+(define-key global-map (kbd "C-x C-j" )'dired-jump)
 ; ----------------------------------------------------------------------------- ;
 ; Auto
 ; ----------------------------------------------------------------------------- ;
@@ -488,7 +506,7 @@
     ("15348febfa2266c4def59a08ef2846f6032c0797f001d7b9148f30ace0d08bcf" default)))
  '(package-selected-packages
    (quote
-    (command-log-mode esup avy yasnippet-snippets yasnippet-bundle ac-helm yasnippet auto-dim-other-buffers jedi csv-mode helm-swoop magit web-mode auto-virtualenvwrapper evil-commentary helm-projectile smartparens evil-leader leuven-theme use-package nlinum-relative helm fuzzy flycheck flatui-theme exec-path-from-shell evil-tabs evil-surround))))
+    (markdown-mode command-log-mode esup avy yasnippet-snippets yasnippet-bundle ac-helm yasnippet auto-dim-other-buffers jedi csv-mode helm-swoop magit web-mode auto-virtualenvwrapper evil-commentary helm-projectile smartparens evil-leader leuven-theme use-package nlinum-relative helm fuzzy flycheck flatui-theme exec-path-from-shell evil-tabs evil-surround))))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
