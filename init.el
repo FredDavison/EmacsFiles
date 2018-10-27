@@ -146,11 +146,7 @@
 (use-package auto-virtualenvwrapper
   :config
   (add-hook 'python-mode-hook #'auto-virtualenvwrapper-activate)
-
-  (cond ((eq system-type 'darwin)
-	 (setq venv-location (expand-file-name "~/.virtualenvs")))
-	((eq system-type 'windows-nt)
-	 (setq venv-location `("C:/Anaconda3/envs" ,(expand-file-name "~/.virtualenvs"))))))
+  (setq venv-location (expand-file-name "~/.virtualenvs")))
 
 
 (use-package jedi
@@ -320,6 +316,23 @@
   )
 
 
+(defun fcd/venv-workon ()
+  "Give user a choice of venv containing directories before selecting venv."
+  (interactive)
+  (when (eq system-type 'windows-nt)
+    (let ((venv-locations `("c:/anaconda3/envs" ,(expand-file-name "~/.virtualenvs")))
+          (venv-choice (read-char-choice
+                        (message "Which venv root location? (a) or (b)\n%s"
+                                 (string-join
+                                  (append venv-locations '("\n")) "\n"))
+                        '(?a ?b))))
+        (cond
+         ((eq (char-to-string venv-choice) "a") (setq venv-location (nth 0 venv-locations)))
+         ((eq (char-to-string venv-choice) "b") (setq venv-location (nth 1 venv-locations))))))
+  (message "venv location: %s" venv-location)
+  (venv-workon))
+
+
 (setq
  python-shell-interpreter "ipython"
  python-shell-interpreter-args "--colors=Linux --simple-prompt"
@@ -338,55 +351,55 @@
 
 (defun set-elisp-ac-sources ()
   (setq ac-sources '(ac-source-functions
-		     ac-source-variables
-		     ac-source-features
-		     ac-source-symbols
-		     ac-source-words-in-same-mode-buffers)))
+                     ac-source-variables
+                     ac-source-features
+                     ac-source-symbols
+                     ac-source-words-in-same-mode-buffers)))
 
 
 (when (eq system-type 'windows-nt)
   (setenv "PATH"
-	  (concat
-	   "C:/Users/fda/repositories/TECC/main/Start;"
-	   "C:/Users/fda/repositories/TECC/main/External/Python/Python27;"
-	   "C:/Users/fda/repositories/TECC/main/External/Python/Python27/Scripts;"
-	   "C:/Users/fda/bin/GnuWin32/bin;"
-	   (getenv "PATH")))
+          (concat
+           "C:/Users/fda/repositories/TECC/main/Start;"
+           "C:/Users/fda/repositories/TECC/main/External/Python/Python27;"
+           "C:/Users/fda/repositories/TECC/main/External/Python/Python27/Scripts;"
+           "C:/Users/fda/bin/GnuWin32/bin;"
+           (getenv "PATH")))
   (add-to-list
-	'exec-path "C:/Users/fda/repositories/TECC/main/External/Python/Python27/Scripts;")
+   'exec-path "C:/Users/fda/repositories/TECC/main/External/Python/Python27/Scripts;")
   (setq exec-path
-	(append '("C:/Users/fda/bin/GnuWin32/bin") exec-path)))
+        (append '("C:/Users/fda/bin/GnuWin32/bin") exec-path)))
 
 
 (setq scroll-margin 0
       scroll-conservatively 1)
 (setq-default scroll-up-aggressively 0.0
-	      scroll-down-aggressively 0.0)
+              scroll-down-aggressively 0.0)
 
 
 (defun fcd/tfs-checkout-and-make-writeable ()
-    (interactive)
-    (message "%s" "TFS: checking out file...")
-    (shell-command
-     (replace-regexp-in-string "/" "\\\\" (concat "TF VC checkout " (buffer-file-name))))
-    (read-only-mode -1))
+  (interactive)
+  (message "%s" "TFS: checking out file...")
+  (shell-command
+   (replace-regexp-in-string "/" "\\\\" (concat "TF VC checkout " (buffer-file-name))))
+  (read-only-mode -1))
 
 
 (defun fcd/tfs-status ()
-    (interactive)
-    (message "%s" "TFS: checking status...")
-    (shell-command
-     (replace-regexp-in-string "/" "\\\\" (concat "TF VC status " (buffer-file-name)))))
+  (interactive)
+  (message "%s" "TFS: checking status...")
+  (shell-command
+   (replace-regexp-in-string "/" "\\\\" (concat "TF VC status " (buffer-file-name)))))
 
 
 (defun fcd/tfs-undo ()
   (interactive)
   (if (yes-or-no-p (message "Really revert changes to %s and undo check-out?" (buffer-file-name)))
       (progn
-	(shell-command
-	 (replace-regexp-in-string "/" "\\\\" (concat "TF VC undo " (buffer-file-name))))
-	(message "%s" "TFS: undoing changes to file...")
-	(read-only-mode 1))
+        (shell-command
+         (replace-regexp-in-string "/" "\\\\" (concat "TF VC undo " (buffer-file-name))))
+        (message "%s" "TFS: undoing changes to file...")
+        (read-only-mode 1))
     (message "%s" "Undo aborted.")))
 
 
@@ -403,7 +416,7 @@
 (global-set-key "\C-x\ \C-r" 'helm-recentf)
 
 
-; Make underscore and dash not delimit words for Evil mode
+                                        ; Make underscore and dash not delimit words for Evil mode
 (modify-syntax-entry ?_ "w" (standard-syntax-table))
 (modify-syntax-entry ?- "w" (standard-syntax-table))
 
@@ -415,7 +428,7 @@
 (setq startup-mode-line-format mode-line-format)
 (setq ring-bell-function 'ignore)
 
-; Hooks
+                                        ; Hooks
 ;; (add-hook 'buffer-list-update-hook 'fcd/highlight-selected-window)
 ;; (remove-hook 'buffer-list-update-hook 'fcd/highlight-selected-window)
 (add-hook 'after-change-major-mode-hook 'fcd/set-ui-to-current-ui-state)
@@ -441,30 +454,30 @@
   )
 
 
-; Only do stuff with the UI after frames exist. Frames don't exist when daemon starts
-; Run it as well for the case when the frame is already created before hook is added
+                                        ; Only do stuff with the UI after frames exist. Frames don't exist when daemon starts
+                                        ; Run it as well for the case when the frame is already created before hook is added
 (fcd/set-ui-after-make-frame)
 (add-hook 'after-make-frame-functions 'fcd/set-ui-after-make-frame)
 
 
-; ----------------------------------------------------------------------------- ;
-; Remaps                                                                        ;
-; ----------------------------------------------------------------------------- ;
+                                        ; ----------------------------------------------------------------------------- ;
+                                        ; Remaps                                                                        ;
+                                        ; ----------------------------------------------------------------------------- ;
 
-; Remove space and ret keybindings from evil normal mode
+                                        ; Remove space and ret keybindings from evil normal mode
 (defun my-move-key (keymap-from keymap-to key)
-     "Moves key binding from one keymap to another, deleting from the old location. "
-     (define-key keymap-to key (lookup-key keymap-from key))
-     (define-key keymap-from key nil))
+  "Moves key binding from one keymap to another, deleting from the old location. "
+  (define-key keymap-to key (lookup-key keymap-from key))
+  (define-key keymap-from key nil))
 (my-move-key evil-motion-state-map evil-normal-state-map (kbd "RET"))
 (my-move-key evil-motion-state-map evil-normal-state-map (kbd "TAB"))
 (my-move-key evil-motion-state-map evil-normal-state-map " ")
 
-; Configure # key to work as intended in evil-mode on Mac
+                                        ; Configure # key to work as intended in evil-mode on Mac
 (when (eq system-type 'darwin)
-      (global-set-key (kbd "M-3") '(lambda () (interactive) (insert "#")))
-      (define-key evil-normal-state-map (kbd "M-3" ) 'evil-search-word-backward)
-      (define-key isearch-mode-map (kbd "M-3") '(lambda () (interactive) (isearch-process-search-char ?\#))))
+  (global-set-key (kbd "M-3") '(lambda () (interactive) (insert "#")))
+  (define-key evil-normal-state-map (kbd "M-3" ) 'evil-search-word-backward)
+  (define-key isearch-mode-map (kbd "M-3") '(lambda () (interactive) (isearch-process-search-char ?\#))))
 
 (global-set-key (kbd "C-c c o") 'fcd/tfs-checkout-and-make-writeable)
 (global-set-key (kbd "C-c c s") 'fcd/tfs-status)
@@ -487,9 +500,9 @@
 (global-set-key (kbd "C-c SPC") 'redraw-display)
 
 (define-key global-map (kbd "C-x C-j" )'dired-jump)
-; ----------------------------------------------------------------------------- ;
-; Auto
-; ----------------------------------------------------------------------------- ;
+                                        ; ----------------------------------------------------------------------------- ;
+                                        ; Auto
+                                        ; ----------------------------------------------------------------------------- ;
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
