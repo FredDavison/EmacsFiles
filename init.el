@@ -30,24 +30,23 @@
 ; Packages:
 ; ----------------------------------------------------------------------------- ;
 
+(require 'package)
+
 (package-initialize)
 
-
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
-
-
-(setq use-package-always-ensure t)
-
-
-(require 'package)
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
                          ("melpa" . "http://melpa.org/packages/")))
 
 
 (when (eq system-type 'darwin)
   (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/")))
+
+
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+
+(setq use-package-always-ensure t)
 
 
 (require 'server)
