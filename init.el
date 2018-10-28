@@ -326,7 +326,7 @@
   "Give user a choice of venv containing directories before selecting venv."
   (interactive)
   (when (eq system-type 'windows-nt)
-    (let ((venv-locations `(,(expand-file-name "~/.virtualenvs") "c:/anaconda3/envs"))
+    (let* ((venv-locations `(,(expand-file-name "~/.virtualenvs") "c:/anaconda3/envs"))
           (venv-choice (read-char-choice
                         (message "Which venv root location?\na) %s\nb) %s"
                                  (car venv-locations) (car (cdr venv-locations)))
@@ -345,35 +345,38 @@
     (message "venv location: %s" venv-location)
     (venv-workon)))
 
-
-(defun fcd/set-pylint-executable ()
-  "Set the pylint executable to match current env Python version."
-  (interactive)
-  ;; (when (eq system-type 'windows-nt)
-  (when t
-  (let ((python-version (string-join (butlast (fcd/shell-python-version)) ".")))
-    (progn
-      (unless
-          (cond ((string= python-version "2.7")
-                 (message "pylint set for Python 2.7"))
-                ((string= python-version "3.5")
-                 (message "pylint set for Python 3.5"))
-                ((string= python-version "3.6")
-                 (message "pylint set for Python 3.6"))
-                ((string= python-version "3.7")
-                 (message "pylint set for Python 3.7")))
-        (message "pylint not available for Python %s" python-version))))))
-
-(fcd/set-pylint-executable)
+(fcd/venv-workon)
 
 
 (defun fcd/shell-python-version ()
   "Return Python version as a list e.g. (major minor micro)."
-  (split-string
-   (car
-    (last
-     (split-string (shell-command-to-string "python -V"))))
-   "\\."))
+  (let ((fcd/python-version (shell-command-to-string "python -V")))
+    (string-match "\\([0-9][0-9]*\\.[0-9][0-9]*\\.[0-9][0-9]*\\)" fcd/python-version)
+    (split-string (match-string 0 fcd/python-version) "\\.")
+    ))
+
+
+(defun fcd/set-pylint-executable ()
+  "Set the pylint executable to match current env Python version."
+  (interactive)
+  (when (eq system-type 'windows-nt)
+    (let ((python-version (string-join (butlast (fcd/shell-python-version)) ".")))
+      (progn
+        (unless
+            (cond ((string= python-version "2.7")
+                   (message "pylint set for Python 2.7")
+                   ;; (setq flycheck-python-pylint-executable "c:/anaconda3/envs/pylint27/scripts/pylint.exe"))
+                   (setq flycheck-python-pylint-executable "c:/users/fda/repositories/tecc/main/external/python/python27/scripts/pylint.exe"))
+                  ((string= python-version "3.5")
+                   (message "pylint set for Python 3.5")
+                   (setq flycheck-python-pylint-executable "c:/anaconda3/envs/pylint35/scripts/pylint.exe"))
+                  ((string= python-version "3.6")
+                   (message "pylint set for Python 3.6")
+                   (setq flycheck-python-pylint-executable "c:/anaconda3/envs/pylint36/scripts/pylint.exe"))
+                  ((string= python-version "3.7")
+                   (message "pylint set for Python 3.7")
+                   (setq flycheck-python-pylint-executable "c:/anaconda3/envs/pylint37/scripts/pylint.exe")))
+          (message "pylint not available for Python %s" python-version))))))
 
 
 (setq
@@ -492,6 +495,8 @@
     (fcd/set-face-font)))
 
 (defun fcd/duplicate-window-vertically ()
+  (interactive)
+  "Make two windows vertically split focussed on current buffer."
   (delete-other-windows)
   (split-window-right)
   )
