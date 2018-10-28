@@ -346,6 +346,36 @@
     (venv-workon)))
 
 
+(defun fcd/set-pylint-executable ()
+  "Set the pylint executable to match current env Python version."
+  (interactive)
+  ;; (when (eq system-type 'windows-nt)
+  (when t
+  (let ((python-version (string-join (butlast (fcd/shell-python-version)) ".")))
+    (progn
+      (unless
+          (cond ((string= python-version "2.7")
+                 (message "pylint set for Python 2.7"))
+                ((string= python-version "3.5")
+                 (message "pylint set for Python 3.5"))
+                ((string= python-version "3.6")
+                 (message "pylint set for Python 3.6"))
+                ((string= python-version "3.7")
+                 (message "pylint set for Python 3.7")))
+        (message "pylint not available for Python %s" python-version))))))
+
+(fcd/set-pylint-executable)
+
+
+(defun fcd/shell-python-version ()
+  "Return Python version as a list e.g. (major minor micro)."
+  (split-string
+   (car
+    (last
+     (split-string (shell-command-to-string "python -V"))))
+   "\\."))
+
+
 (setq
  python-shell-interpreter "ipython"
  python-shell-interpreter-args "--colors=Linux --simple-prompt"
