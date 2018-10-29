@@ -345,8 +345,6 @@
     (message "venv location: %s" venv-location)
     (venv-workon)))
 
-(fcd/venv-workon)
-
 
 (defun fcd/shell-python-version ()
   "Return Python version as a list e.g. (major minor micro)."
