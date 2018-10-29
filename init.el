@@ -13,6 +13,11 @@
 ;;; Commentary:
 ; Should work on both OSX and Windows 7 machines
 
+; TODO get pylint working with venvs
+; TODO get autovenv working nicely with projects
+; TODO get server working on Windows
+; TODO get jedi auto complete working properly
+
 
 ; ----------------------------------------------------------------------------- ;
 ;;; Code:
@@ -24,37 +29,46 @@
 (tool-bar-mode -1)
 (global-hl-line-mode t)
 (set-default 'truncate-lines t)
+(setq-default indent-tabs-mode nil)
 
+(autoload 'dired-jump "dired-x"
+  "Jump to Dired buffer corresponding to current buffer." t)
+     
+(autoload 'dired-jump-other-window "dired-x"
+  "Like \\[dired-jump] (dired-jump) but in other window." t)
 
 ; ----------------------------------------------------------------------------- ;
 ; Packages:
 ; ----------------------------------------------------------------------------- ;
 
-(package-initialize)
-
-
-(require 'package)
-(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-                         ("melpa" . "http://melpa.org/packages/")))
-
-
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
-
-
-(setq use-package-always-ensure t)
-
-
-(when (eq system-type 'darwin)
-  (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/")))
-
-
 (require 'server)
 (unless (server-running-p) (server-start))
 
 
+(require 'package)
+(package-initialize)
+(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
+                         ("melpa" . "http://melpa.org/packages/")))
+(when (not (eq system-type 'windows-nt))
+  (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/")))
+
+
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package)
+  (setq use-package-always-ensure t))
+
+
 (use-package f)
+
+
+(use-package markdown-mode
+  :ensure t
+  :commands (markdown-mode gfm-mode)
+  :mode (("README\\.md\\'" . gfm-mode)
+         ("\\.md\\'" . markdown-mode)
+         ("\\.markdown\\'" . markdown-mode))
+  :init (setq markdown-command "pandoc"))
 
 
 (use-package yasnippet
@@ -96,6 +110,7 @@
   (evil-leader/set-key "n" 'fcd/toggle-global-nlinum-relative)
   (evil-leader/set-key "b" 'switch-to-buffer)
   (evil-leader/set-key "C" 'flycheck-clear)
+  (evil-leader/set-key "3" 'fcd/duplicate-window-vertically)
   )
 
 
@@ -127,8 +142,9 @@
 
 (use-package auto-virtualenvwrapper
   :config
-  (add-hook 'python-mode-hook #'auto-virtualenvwrapper-activate)
-  (setq venv-location (expand-file-name "~/.virtualenvs")))
+  (when (not (eq system-type 'windows-nt))
+    (add-hook 'python-mode-hook #'auto-virtualenvwrapper-activate)
+    (setq venv-location (expand-file-name "~/.virtualenvs"))))
 
 
 (use-package jedi
@@ -298,6 +314,61 @@
   )
 
 
+(defun fcd/venv-workon ()
+  "Give user a choice of venv containing directories before selecting venv."
+  (interactive)
+  (when (eq system-type 'windows-nt)
+    (let* ((venv-locations `(,(expand-file-name "~/.virtualenvs") "c:/anaconda3/envs"))
+          (venv-choice (read-char-choice
+                        (message "Which venv root location?\na) %s\nb) %s"
+                                 (car venv-locations) (car (cdr venv-locations)))
+                        '(?a ?b))))
+      (cond
+       ((eq venv-choice 97)
+        (progn
+          (message "a selected")
+          (setq venv-location (nth 0 venv-locations))))
+       ((eq venv-choice 98)
+        (progn
+          (message "a selected")
+          (setq venv-location (nth 1 venv-locations))))))
+    )
+  (progn
+    (message "venv location: %s" venv-location)
+    (venv-workon)))
+
+
+(defun fcd/shell-python-version ()
+  "Return Python version as a list e.g. (major minor micro)."
+  (let ((fcd/python-version (shell-command-to-string "python -V")))
+    (string-match "\\([0-9][0-9]*\\.[0-9][0-9]*\\.[0-9][0-9]*\\)" fcd/python-version)
+    (split-string (match-string 0 fcd/python-version) "\\.")
+    ))
+
+
+(defun fcd/set-pylint-executable ()
+  "Set the pylint executable to match current env Python version."
+  (interactive)
+  (when (eq system-type 'windows-nt)
+    (let ((python-version (string-join (butlast (fcd/shell-python-version)) ".")))
+      (progn
+        (unless
+            (cond ((string= python-version "2.7")
+                   (message "pylint set for Python 2.7")
+                   ;; (setq flycheck-python-pylint-executable "c:/anaconda3/envs/pylint27/scripts/pylint.exe"))
+                   (setq flycheck-python-pylint-executable "c:/users/fda/repositories/tecc/main/external/python/python27/scripts/pylint.exe"))
+                  ((string= python-version "3.5")
+                   (message "pylint set for Python 3.5")
+                   (setq flycheck-python-pylint-executable "c:/anaconda3/envs/pylint35/scripts/pylint.exe"))
+                  ((string= python-version "3.6")
+                   (message "pylint set for Python 3.6")
+                   (setq flycheck-python-pylint-executable "c:/anaconda3/envs/pylint36/scripts/pylint.exe"))
+                  ((string= python-version "3.7")
+                   (message "pylint set for Python 3.7")
+                   (setq flycheck-python-pylint-executable "c:/anaconda3/envs/pylint37/scripts/pylint.exe")))
+          (message "pylint not available for Python %s" python-version))))))
+
+
 (setq
  python-shell-interpreter "ipython"
  python-shell-interpreter-args "--colors=Linux --simple-prompt"
@@ -316,62 +387,55 @@
 
 (defun set-elisp-ac-sources ()
   (setq ac-sources '(ac-source-functions
-		     ac-source-variables
-		     ac-source-features
-		     ac-source-symbols
-		     ac-source-words-in-same-mode-buffers)))
-
-
-(defun fcd/set-pylint-exec ()
-  (flycheck-set-checker-executable
-   'python-pylint
-   "c:/Users/fda/repositories/TECC/Main/External/Python/Python27/scripts/pylint.exe"))
+                     ac-source-variables
+                     ac-source-features
+                     ac-source-symbols
+                     ac-source-words-in-same-mode-buffers)))
 
 
 (when (eq system-type 'windows-nt)
-  (add-hook 'python-mode-hook 'fcd/set-pylint-exec)
   (setenv "PATH"
-	  (concat
-	   "C:/Users/fda/repositories/TECC/main/Start;"
-	   "C:/Users/fda/repositories/TECC/main/External/Python/Python27;"
-	   "C:/Users/fda/repositories/TECC/main/External/Python/Python27/Scripts;"
-	   "C:/Users/fda/bin/GnuWin32/bin;"
-	   (getenv "PATH")))
+          (concat
+           "C:/Users/fda/repositories/TECC/main/Start;"
+           "C:/Users/fda/repositories/TECC/main/External/Python/Python27;"
+           "C:/Users/fda/repositories/TECC/main/External/Python/Python27/Scripts;"
+           "C:/Users/fda/bin/GnuWin32/bin;"
+           (getenv "PATH")))
   (add-to-list
-	'exec-path "C:/Users/fda/repositories/TECC/main/External/Python/Python27/Scripts;")
+   'exec-path "C:/Users/fda/repositories/TECC/main/External/Python/Python27/Scripts;")
   (setq exec-path
-	(append '("C:/Users/fda/bin/GnuWin32/bin") exec-path)))
+        (append '("C:/Users/fda/bin/GnuWin32/bin") exec-path)))
 
 
 (setq scroll-margin 0
       scroll-conservatively 1)
 (setq-default scroll-up-aggressively 0.0
-	      scroll-down-aggressively 0.0)
+              scroll-down-aggressively 0.0)
 
 
 (defun fcd/tfs-checkout-and-make-writeable ()
-    (interactive)
-    (message "%s" "TFS: checking out file...")
-    (shell-command
-     (replace-regexp-in-string "/" "\\\\" (concat "TF VC checkout " (buffer-file-name))))
-    (read-only-mode -1))
+  (interactive)
+  (message "%s" "TFS: checking out file...")
+  (shell-command
+   (replace-regexp-in-string "/" "\\\\" (concat "TF VC checkout " (buffer-file-name))))
+  (read-only-mode -1))
 
 
 (defun fcd/tfs-status ()
-    (interactive)
-    (message "%s" "TFS: checking status...")
-    (shell-command
-     (replace-regexp-in-string "/" "\\\\" (concat "TF VC status " (buffer-file-name)))))
+  (interactive)
+  (message "%s" "TFS: checking status...")
+  (shell-command
+   (replace-regexp-in-string "/" "\\\\" (concat "TF VC status " (buffer-file-name)))))
 
 
 (defun fcd/tfs-undo ()
   (interactive)
   (if (yes-or-no-p (message "Really revert changes to %s and undo check-out?" (buffer-file-name)))
       (progn
-	(shell-command
-	 (replace-regexp-in-string "/" "\\\\" (concat "TF VC undo " (buffer-file-name))))
-	(message "%s" "TFS: undoing changes to file...")
-	(read-only-mode 1))
+        (shell-command
+         (replace-regexp-in-string "/" "\\\\" (concat "TF VC undo " (buffer-file-name))))
+        (message "%s" "TFS: undoing changes to file...")
+        (read-only-mode 1))
     (message "%s" "Undo aborted.")))
 
 
@@ -388,7 +452,7 @@
 (global-set-key "\C-x\ \C-r" 'helm-recentf)
 
 
-; Make underscore and dash not delimit words for Evil mode
+                                        ; Make underscore and dash not delimit words for Evil mode
 (modify-syntax-entry ?_ "w" (standard-syntax-table))
 (modify-syntax-entry ?- "w" (standard-syntax-table))
 
@@ -400,12 +464,12 @@
 (setq startup-mode-line-format mode-line-format)
 (setq ring-bell-function 'ignore)
 
-; Hooks
+                                        ; Hooks
 ;; (add-hook 'buffer-list-update-hook 'fcd/highlight-selected-window)
 ;; (remove-hook 'buffer-list-update-hook 'fcd/highlight-selected-window)
 (add-hook 'after-change-major-mode-hook 'fcd/set-ui-to-current-ui-state)
 
-(setq js-indent-level 2)
+(setq js-indent-level 4)
 
 
 (defun fcd/set-ui-after-make-frame ()
@@ -420,31 +484,38 @@
     (fcd/set-ui-to-current-ui-state)
     (fcd/set-face-font)))
 
+(defun fcd/duplicate-window-vertically ()
+  (interactive)
+  "Make two windows vertically split focussed on current buffer."
+  (delete-other-windows)
+  (split-window-right)
+  )
 
-; Only do stuff with the UI after frames exist. Frames don't exist when daemon starts
-; Run it as well for the case when the frame is already created before hook is added
+
+                                        ; Only do stuff with the UI after frames exist. Frames don't exist when daemon starts
+                                        ; Run it as well for the case when the frame is already created before hook is added
 (fcd/set-ui-after-make-frame)
 (add-hook 'after-make-frame-functions 'fcd/set-ui-after-make-frame)
 
 
-; ----------------------------------------------------------------------------- ;
-; Remaps                                                                        ;
-; ----------------------------------------------------------------------------- ;
+                                        ; ----------------------------------------------------------------------------- ;
+                                        ; Remaps                                                                        ;
+                                        ; ----------------------------------------------------------------------------- ;
 
-; Remove space and ret keybindings from evil normal mode
+                                        ; Remove space and ret keybindings from evil normal mode
 (defun my-move-key (keymap-from keymap-to key)
-     "Moves key binding from one keymap to another, deleting from the old location. "
-     (define-key keymap-to key (lookup-key keymap-from key))
-     (define-key keymap-from key nil))
+  "Moves key binding from one keymap to another, deleting from the old location. "
+  (define-key keymap-to key (lookup-key keymap-from key))
+  (define-key keymap-from key nil))
 (my-move-key evil-motion-state-map evil-normal-state-map (kbd "RET"))
 (my-move-key evil-motion-state-map evil-normal-state-map (kbd "TAB"))
 (my-move-key evil-motion-state-map evil-normal-state-map " ")
 
-; Configure # key to work as intended in evil-mode on Mac
+                                        ; Configure # key to work as intended in evil-mode on Mac
 (when (eq system-type 'darwin)
-      (global-set-key (kbd "M-3") '(lambda () (interactive) (insert "#")))
-      (define-key evil-normal-state-map (kbd "M-3" ) 'evil-search-word-backward)
-      (define-key isearch-mode-map (kbd "M-3") '(lambda () (interactive) (isearch-process-search-char ?\#))))
+  (global-set-key (kbd "M-3") '(lambda () (interactive) (insert "#")))
+  (define-key evil-normal-state-map (kbd "M-3" ) 'evil-search-word-backward)
+  (define-key isearch-mode-map (kbd "M-3") '(lambda () (interactive) (isearch-process-search-char ?\#))))
 
 (global-set-key (kbd "C-c c o") 'fcd/tfs-checkout-and-make-writeable)
 (global-set-key (kbd "C-c c s") 'fcd/tfs-status)
@@ -466,9 +537,10 @@
 
 (global-set-key (kbd "C-c SPC") 'redraw-display)
 
-; ----------------------------------------------------------------------------- ;
-; Auto
-; ----------------------------------------------------------------------------- ;
+(define-key global-map (kbd "C-x C-j" )'dired-jump)
+                                        ; ----------------------------------------------------------------------------- ;
+                                        ; Auto
+                                        ; ----------------------------------------------------------------------------- ;
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -480,7 +552,7 @@
     ("15348febfa2266c4def59a08ef2846f6032c0797f001d7b9148f30ace0d08bcf" default)))
  '(package-selected-packages
    (quote
-    (command-log-mode esup avy yasnippet-snippets yasnippet-bundle ac-helm yasnippet auto-dim-other-buffers jedi csv-mode helm-swoop magit web-mode auto-virtualenvwrapper evil-commentary helm-projectile smartparens evil-leader leuven-theme use-package nlinum-relative helm fuzzy flycheck flatui-theme exec-path-from-shell evil-tabs evil-surround))))
+    (edit-indirect markdown-mode command-log-mode esup avy yasnippet-snippets yasnippet-bundle ac-helm yasnippet auto-dim-other-buffers jedi csv-mode helm-swoop magit web-mode auto-virtualenvwrapper evil-commentary helm-projectile smartparens evil-leader leuven-theme use-package nlinum-relative helm fuzzy flycheck flatui-theme exec-path-from-shell evil-tabs evil-surround))))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
