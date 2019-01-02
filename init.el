@@ -13,9 +13,6 @@
 ;;; Commentary:
 ; Should work on both OSX and Windows 7 machines
 
-; TODO get pylint working with venvs
-; TODO get autovenv working nicely with projects
-; TODO get server working on Windows
 ; TODO get jedi auto complete working properly
 
 
@@ -452,6 +449,7 @@
 (setq recentf-max-saved-items 200)
 (global-set-key "\C-x\ \C-r" 'helm-recentf)
 
+(setq bookmark-save-flag 1)
 
                                         ; Make underscore and dash not delimit words for Evil mode
 (modify-syntax-entry ?_ "w" (standard-syntax-table))
