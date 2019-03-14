@@ -210,6 +210,10 @@
     )
   )
 
+(use-package rjsx-mode
+  :config
+  (add-to-list 'auto-mode-alist '("components\\/.*\\.js\\'" . rjsx-mode)))
+
 (use-package helm-swoop
   :config
   (global-set-key (kbd "C-s") 'helm-swoop))
@@ -398,11 +402,13 @@
            "C:/Users/fda/repositories/TECC/main/External/Python/Python27;"
            "C:/Users/fda/repositories/TECC/main/External/Python/Python27/Scripts;"
            "C:/Users/fda/bin/GnuWin32/bin;"
+           "C:/Program Files/Git/usr/bin;"
            (getenv "PATH")))
-  (add-to-list
-   'exec-path "C:/Users/fda/repositories/TECC/main/External/Python/Python27/Scripts;")
   (setq exec-path
-        (append '("C:/Users/fda/bin/GnuWin32/bin") exec-path)))
+        (append '("C:/Users/fda/bin/GnuWin32/bin"
+                  "C:/Program Files/Git/usr/bin"
+                  "C:/Users/fda/repositories/TECC/main/External/Python/Python27/Scripts")
+                exec-path)))
 
 
 (setq scroll-margin 0
@@ -451,6 +457,10 @@
 
 (setq bookmark-save-flag 1)
 
+
+; dired settings
+(setq dired-listing-switches "-aBhl  --group-directories-first")
+
                                         ; Make underscore and dash not delimit words for Evil mode
 (modify-syntax-entry ?_ "w" (standard-syntax-table))
 (modify-syntax-entry ?- "w" (standard-syntax-table))
@@ -468,7 +478,7 @@
 ;; (remove-hook 'buffer-list-update-hook 'fcd/highlight-selected-window)
 (add-hook 'after-change-major-mode-hook 'fcd/set-ui-to-current-ui-state)
 
-(setq js-indent-level 4)
+(setq js-indent-level 2)
 
 
 (defun fcd/set-ui-after-make-frame ()
@@ -552,7 +562,7 @@
     ("15348febfa2266c4def59a08ef2846f6032c0797f001d7b9148f30ace0d08bcf" default)))
  '(package-selected-packages
    (quote
-    (edit-indirect markdown-mode command-log-mode esup avy yasnippet-snippets yasnippet-bundle ac-helm yasnippet auto-dim-other-buffers jedi csv-mode helm-swoop magit web-mode auto-virtualenvwrapper evil-commentary helm-projectile smartparens evil-leader leuven-theme use-package nlinum-relative helm fuzzy flycheck flatui-theme exec-path-from-shell evil-tabs evil-surround))))
+    (rjsx-mode edit-indirect markdown-mode command-log-mode esup avy yasnippet-snippets yasnippet-bundle ac-helm yasnippet auto-dim-other-buffers jedi csv-mode helm-swoop magit web-mode auto-virtualenvwrapper evil-commentary helm-projectile smartparens evil-leader leuven-theme use-package nlinum-relative helm fuzzy flycheck flatui-theme exec-path-from-shell evil-tabs evil-surround))))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
