@@ -192,7 +192,9 @@
   :config
   (projectile-mode t)
   (helm-projectile-on)
-  (setq projectile-globally-ignored-file-suffixes '("pyc" "~" "#" "exe" "sdf"))
+  (setq projectile-globally-ignored-file-suffixes
+        '("pyc" "~" "#" "exe" "sdf" "xcf" "xlsm" "xlsx" "png" "bmp" "jpg" "zip" "whl"
+          "docx" "doc"))
   (setq projectile-indexing-method 'alien)
   )
 
