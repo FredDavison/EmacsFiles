@@ -346,6 +346,15 @@
     (venv-workon)))
 
 
+(defun fcd/shell-python-version ()
+  "Return Python version as a list e.g. (major minor micro)."
+  (split-string
+   (car
+    (last
+     (split-string (shell-command-to-string "python -V"))))
+   "\\."))
+
+
 (defun fcd/set-pylint-executable ()
   "Set the pylint executable to match current env Python version."
   (interactive)
@@ -365,15 +374,6 @@
         (message "pylint not available for Python %s" python-version))))))
 
 (fcd/set-pylint-executable)
-
-
-(defun fcd/shell-python-version ()
-  "Return Python version as a list e.g. (major minor micro)."
-  (split-string
-   (car
-    (last
-     (split-string (shell-command-to-string "python -V"))))
-   "\\."))
 
 
 (setq
@@ -557,7 +557,7 @@
     ("15348febfa2266c4def59a08ef2846f6032c0797f001d7b9148f30ace0d08bcf" default)))
  '(package-selected-packages
    (quote
-    (markdown-mode command-log-mode esup avy yasnippet-snippets yasnippet-bundle ac-helm yasnippet auto-dim-other-buffers jedi csv-mode helm-swoop magit web-mode auto-virtualenvwrapper evil-commentary helm-projectile smartparens evil-leader leuven-theme use-package nlinum-relative helm fuzzy flycheck flatui-theme exec-path-from-shell evil-tabs evil-surround))))
+    (rjsx-mode markdown-mode command-log-mode esup avy yasnippet-snippets yasnippet-bundle ac-helm yasnippet auto-dim-other-buffers jedi csv-mode helm-swoop magit web-mode auto-virtualenvwrapper evil-commentary helm-projectile smartparens evil-leader leuven-theme use-package nlinum-relative helm fuzzy flycheck flatui-theme exec-path-from-shell evil-tabs evil-surround))))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
