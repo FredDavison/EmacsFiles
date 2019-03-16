@@ -107,11 +107,11 @@
     (set-face-foreground 'vertical-border fcd-ui-tertiary-strong)
     (set-face-background 'vertical-border (face-background 'vertical-border))
     (set-face-attribute 'linum nil
-			:background fcd-ui-tertiary
+			:background "white"
 			:foreground fcd-ui-foreground)
     (set-face-attribute 'nlinum-relative-current-face nil
 			:inherit 'linum
-			:background fcd-ui-tertiary
+			:background "white"
 			:foreground fcd-ui-foreground
 			:weight 'normal)
     (set-face-attribute 'mode-line-buffer-id nil
