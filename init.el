@@ -67,11 +67,11 @@
   :init (setq markdown-command "pandoc"))
 
 
-(use-package yasnippet
-  :config
-  (yas-global-mode t))
+;; (use-package yasnippet
+;;   :config
+;;   (yas-global-mode t))
 
-(use-package yasnippet-snippets)
+;; (use-package yasnippet-snippets)
 
 (use-package undo-tree)
 
