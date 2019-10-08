@@ -13,9 +13,6 @@
 ;;; Commentary:
 ; Should work on both OSX and Windows 7 machines
 
-; TODO get pylint working with venvs
-; TODO get autovenv working nicely with projects
-; TODO get server working on Windows
 ; TODO get jedi auto complete working properly
 
 
@@ -70,11 +67,11 @@
   :init (setq markdown-command "pandoc"))
 
 
-(use-package yasnippet
-  :config
-  (yas-global-mode t))
+;; (use-package yasnippet
+;;   :config
+;;   (yas-global-mode t))
 
-(use-package yasnippet-snippets)
+;; (use-package yasnippet-snippets)
 
 (use-package undo-tree)
 
@@ -215,6 +212,10 @@
     (setq web-mode-code-indent-offset 2)
     )
   )
+
+(use-package rjsx-mode
+  :config
+  (add-to-list 'auto-mode-alist '("components\\/.*\\.js\\'" . rjsx-mode)))
 
 (use-package helm-swoop
   :config
@@ -404,11 +405,13 @@
            "C:/Users/fda/repositories/TECC/main/External/Python/Python27;"
            "C:/Users/fda/repositories/TECC/main/External/Python/Python27/Scripts;"
            "C:/Users/fda/bin/GnuWin32/bin;"
+           "C:/Program Files/Git/usr/bin;"
            (getenv "PATH")))
-  (add-to-list
-   'exec-path "C:/Users/fda/repositories/TECC/main/External/Python/Python27/Scripts;")
   (setq exec-path
-        (append '("C:/Users/fda/bin/GnuWin32/bin") exec-path)))
+        (append '("C:/Users/fda/bin/GnuWin32/bin"
+                  "C:/Program Files/Git/usr/bin"
+                  "C:/Users/fda/repositories/TECC/main/External/Python/Python27/Scripts")
+                exec-path)))
 
 
 (setq scroll-margin 0
@@ -455,6 +458,11 @@
 (setq recentf-max-saved-items 200)
 (global-set-key "\C-x\ \C-r" 'helm-recentf)
 
+(setq bookmark-save-flag 1)
+
+
+; dired settings
+(setq dired-listing-switches "-aBhl  --group-directories-first")
 
                                         ; Make underscore and dash not delimit words for Evil mode
 (modify-syntax-entry ?_ "w" (standard-syntax-table))

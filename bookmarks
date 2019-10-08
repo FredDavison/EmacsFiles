@@ -1,0 +1,45 @@
+;;;; Emacs Bookmark Format Version 1 ;;;;
+;;; This format is meant to be slightly human-readable;
+;;; nevertheless, you probably don't want to edit it.
+;;; -*- End Of Bookmark File Format Version Stamp -*-
+(("OneDrive"
+ (filename . "~/OneDrive - DNV GL/")
+ (front-context-string . "desktop.ini\n    ")
+ (rear-context-string . "184 2017-10-12  ")
+ (position . 360))
+("workspaces"
+ (filename . "~/workspaces/")
+ (front-context-string . "fatigue_manager\n")
+ (rear-context-string . " 4k 2017-10-12  ")
+ (position . 259))
+("repositories"
+ (filename . "~/repositories/")
+ (front-context-string)
+ (rear-context-string . "lice_replicator\n")
+ (position . 867))
+("TECC site-packages"
+ (filename . "~/repositories/TECC/Main/External/Python/Python27/Lib/site-packages/")
+ (front-context-string . "adodbapi\n      5")
+ (rear-context-string . " 4k 2017-10-13  ")
+ (position . 375))
+("TA Legacy SupportStructure"
+ (filename . "~/repositories/TECC/Main/Source/Engineering/CostModelling/Turbine/SupportStructure/")
+ (front-context-string . "Beams\n  drwxrwxr")
+ (rear-context-string . "096 11-21 17:24 ")
+ (position . 305))
+("TA Legacy"
+ (filename . "~/repositories/TECC/Main/Source/Engineering/CostModelling/")
+ (front-context-string . "api.py\n  -r--r--")
+ (rear-context-string . "165 2018-05-01  ")
+ (position . 295))
+("TA Framework"
+ (filename . "~/repositories/ta/")
+ (front-context-string . "Applications\n  d")
+ (rear-context-string . "096 10-31 09:20 ")
+ (position . 243))
+("TECC Source"
+ (filename . "~/repositories/TECC/Main/Source/")
+ (front-context-string . "BranchedWolverin")
+ (rear-context-string . "  0 2017-10-13  ")
+ (position . 253))
+)
