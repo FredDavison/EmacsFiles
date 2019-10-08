@@ -201,6 +201,7 @@
   (setq projectile-indexing-method 'alien)
   )
 
+(use-package rjsx-mode)
 
 (when (eq system-type 'darwin)
   (use-package web-mode
@@ -472,7 +473,7 @@
 ;; (remove-hook 'buffer-list-update-hook 'fcd/highlight-selected-window)
 (add-hook 'after-change-major-mode-hook 'fcd/set-ui-to-current-ui-state)
 
-(setq js-indent-level 4)
+(setq js-indent-level 2)
 
 
 (defun fcd/set-ui-after-make-frame ()
@@ -556,7 +557,7 @@
     ("15348febfa2266c4def59a08ef2846f6032c0797f001d7b9148f30ace0d08bcf" default)))
  '(package-selected-packages
    (quote
-    (edit-indirect markdown-mode command-log-mode esup avy yasnippet-snippets yasnippet-bundle ac-helm yasnippet auto-dim-other-buffers jedi csv-mode helm-swoop magit web-mode auto-virtualenvwrapper evil-commentary helm-projectile smartparens evil-leader leuven-theme use-package nlinum-relative helm fuzzy flycheck flatui-theme exec-path-from-shell evil-tabs evil-surround))))
+    (flycheck-demjsonlint rjsx-mode edit-indirect markdown-mode command-log-mode esup avy yasnippet-snippets yasnippet-bundle ac-helm yasnippet auto-dim-other-buffers jedi csv-mode helm-swoop magit web-mode auto-virtualenvwrapper evil-commentary helm-projectile smartparens evil-leader leuven-theme use-package nlinum-relative helm fuzzy flycheck flatui-theme exec-path-from-shell evil-tabs evil-surround))))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
