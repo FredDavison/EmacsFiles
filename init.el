@@ -454,9 +454,12 @@
 
 (require 'recentf)
 (recentf-mode 1)
+(add-hook 'find-file-hook 'recentf-save-list)
 (setq recentf-max-menu-items 200)
 (setq recentf-max-saved-items 200)
 (global-set-key "\C-x\ \C-r" 'helm-recentf)
+
+
 
 (setq bookmark-save-flag 1)
 
