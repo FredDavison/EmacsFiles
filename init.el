@@ -13,9 +13,6 @@
 ;;; Commentary:
 ; Should work on both OSX and Windows 7 machines
 
-; TODO get pylint working with venvs
-; TODO get autovenv working nicely with projects
-; TODO get server working on Windows
 ; TODO get jedi auto complete working properly
 
 
@@ -44,27 +41,18 @@
 (require 'server)
 (unless (server-running-p) (server-start))
 
-
 (require 'package)
-
-
 (package-initialize)
-
-
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
                          ("melpa" . "http://melpa.org/packages/")))
-
-
-(when (eq system-type 'darwin)
+(when (not (eq system-type 'windows-nt))
   (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/")))
 
 
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
-  (package-install 'use-package))
-
-
-(setq use-package-always-ensure t)
+  (package-install 'use-package)
+  (setq use-package-always-ensure t))
 
 
 (use-package f)
@@ -79,11 +67,11 @@
   :init (setq markdown-command "pandoc"))
 
 
-(use-package yasnippet
-  :config
-  (yas-global-mode t))
+;; (use-package yasnippet
+;;   :config
+;;   (yas-global-mode t))
 
-(use-package yasnippet-snippets)
+;; (use-package yasnippet-snippets)
 
 (use-package undo-tree)
 
@@ -94,7 +82,7 @@
   (load-theme 'leuven t)
   )
 
-(when (eq system-type 'darwin)
+(when (or (eq system-type 'darwin) (eq system-type 'gnu/linux))
   (use-package magit))
 
 ; Initialize environment from the user's shell.
@@ -143,7 +131,9 @@
   :config
   (global-auto-complete-mode t)
   (setq ac-use-menu-map t)
-  (setq ac-auto-start 4)
+  (if (eq system-type 'windows-nt)
+      (setq ac-auto-start nil)
+      (setq ac-auto-start 2))
   (setq ac-max-width 0.3)
   (add-hook 'emacs-lisp-mode-hook 'set-elisp-ac-sources))
 
@@ -202,10 +192,13 @@
   :config
   (projectile-mode t)
   (helm-projectile-on)
-  (setq projectile-globally-ignored-file-suffixes '("pyc" "~" "#" "exe" "sdf"))
+  (setq projectile-globally-ignored-file-suffixes
+        '("pyc" "~" "#" "exe" "sdf" "xcf" "xlsm" "xlsx" "png" "bmp" "jpg" "zip" "whl"
+          "docx" "doc"))
   (setq projectile-indexing-method 'alien)
   )
 
+(use-package rjsx-mode)
 
 (when (eq system-type 'darwin)
   (use-package web-mode
@@ -219,6 +212,10 @@
     (setq web-mode-code-indent-offset 2)
     )
   )
+
+(use-package rjsx-mode
+  :config
+  (add-to-list 'auto-mode-alist '("components\\/.*\\.js\\'" . rjsx-mode)))
 
 (use-package helm-swoop
   :config
@@ -326,7 +323,7 @@
   "Give user a choice of venv containing directories before selecting venv."
   (interactive)
   (when (eq system-type 'windows-nt)
-    (let ((venv-locations `(,(expand-file-name "~/.virtualenvs") "c:/anaconda3/envs"))
+    (let* ((venv-locations `(,(expand-file-name "~/.virtualenvs") "c:/anaconda3/envs"))
           (venv-choice (read-char-choice
                         (message "Which venv root location?\na) %s\nb) %s"
                                  (car venv-locations) (car (cdr venv-locations)))
@@ -348,32 +345,33 @@
 
 (defun fcd/shell-python-version ()
   "Return Python version as a list e.g. (major minor micro)."
-  (split-string
-   (car
-    (last
-     (split-string (shell-command-to-string "python -V"))))
-   "\\."))
+  (let ((fcd/python-version (shell-command-to-string "python -V")))
+    (string-match "\\([0-9][0-9]*\\.[0-9][0-9]*\\.[0-9][0-9]*\\)" fcd/python-version)
+    (split-string (match-string 0 fcd/python-version) "\\.")
+    ))
 
 
 (defun fcd/set-pylint-executable ()
   "Set the pylint executable to match current env Python version."
   (interactive)
-  ;; (when (eq system-type 'windows-nt)
-  (when t
-  (let ((python-version (string-join (butlast (fcd/shell-python-version)) ".")))
-    (progn
-      (unless
-          (cond ((string= python-version "2.7")
-                 (message "pylint set for Python 2.7"))
-                ((string= python-version "3.5")
-                 (message "pylint set for Python 3.5"))
-                ((string= python-version "3.6")
-                 (message "pylint set for Python 3.6"))
-                ((string= python-version "3.7")
-                 (message "pylint set for Python 3.7")))
-        (message "pylint not available for Python %s" python-version))))))
-
-(fcd/set-pylint-executable)
+  (when (eq system-type 'windows-nt)
+    (let ((python-version (string-join (butlast (fcd/shell-python-version)) ".")))
+      (progn
+        (unless
+            (cond ((string= python-version "2.7")
+                   (message "pylint set for Python 2.7")
+                   ;; (setq flycheck-python-pylint-executable "c:/anaconda3/envs/pylint27/scripts/pylint.exe"))
+                   (setq flycheck-python-pylint-executable "c:/users/fda/repositories/tecc/main/external/python/python27/scripts/pylint.exe"))
+                  ((string= python-version "3.5")
+                   (message "pylint set for Python 3.5")
+                   (setq flycheck-python-pylint-executable "c:/anaconda3/envs/pylint35/scripts/pylint.exe"))
+                  ((string= python-version "3.6")
+                   (message "pylint set for Python 3.6")
+                   (setq flycheck-python-pylint-executable "c:/anaconda3/envs/pylint36/scripts/pylint.exe"))
+                  ((string= python-version "3.7")
+                   (message "pylint set for Python 3.7")
+                   (setq flycheck-python-pylint-executable "c:/anaconda3/envs/pylint37/scripts/pylint.exe")))
+          (message "pylint not available for Python %s" python-version))))))
 
 
 (setq
@@ -407,11 +405,13 @@
            "C:/Users/fda/repositories/TECC/main/External/Python/Python27;"
            "C:/Users/fda/repositories/TECC/main/External/Python/Python27/Scripts;"
            "C:/Users/fda/bin/GnuWin32/bin;"
+           "C:/Program Files/Git/usr/bin;"
            (getenv "PATH")))
-  (add-to-list
-   'exec-path "C:/Users/fda/repositories/TECC/main/External/Python/Python27/Scripts;")
   (setq exec-path
-        (append '("C:/Users/fda/bin/GnuWin32/bin") exec-path)))
+        (append '("C:/Users/fda/bin/GnuWin32/bin"
+                  "C:/Program Files/Git/usr/bin"
+                  "C:/Users/fda/repositories/TECC/main/External/Python/Python27/Scripts")
+                exec-path)))
 
 
 (setq scroll-margin 0
@@ -454,10 +454,18 @@
 
 (require 'recentf)
 (recentf-mode 1)
+(add-hook 'find-file-hook 'recentf-save-list)
 (setq recentf-max-menu-items 200)
 (setq recentf-max-saved-items 200)
 (global-set-key "\C-x\ \C-r" 'helm-recentf)
 
+
+
+(setq bookmark-save-flag 1)
+
+
+; dired settings
+(setq dired-listing-switches "-aBhl  --group-directories-first")
 
                                         ; Make underscore and dash not delimit words for Evil mode
 (modify-syntax-entry ?_ "w" (standard-syntax-table))
@@ -476,7 +484,7 @@
 ;; (remove-hook 'buffer-list-update-hook 'fcd/highlight-selected-window)
 (add-hook 'after-change-major-mode-hook 'fcd/set-ui-to-current-ui-state)
 
-(setq js-indent-level 4)
+(setq js-indent-level 2)
 
 
 (defun fcd/set-ui-after-make-frame ()
@@ -492,8 +500,11 @@
     (fcd/set-face-font)))
 
 (defun fcd/duplicate-window-vertically ()
+  (interactive)
+  "Make two windows vertically split focussed on current buffer."
   (delete-other-windows)
   (split-window-right)
+  (other-window 1)
   )
 
 
@@ -557,7 +568,7 @@
     ("15348febfa2266c4def59a08ef2846f6032c0797f001d7b9148f30ace0d08bcf" default)))
  '(package-selected-packages
    (quote
-    (rjsx-mode markdown-mode command-log-mode esup avy yasnippet-snippets yasnippet-bundle ac-helm yasnippet auto-dim-other-buffers jedi csv-mode helm-swoop magit web-mode auto-virtualenvwrapper evil-commentary helm-projectile smartparens evil-leader leuven-theme use-package nlinum-relative helm fuzzy flycheck flatui-theme exec-path-from-shell evil-tabs evil-surround))))
+    (flycheck-demjsonlint rjsx-mode edit-indirect markdown-mode command-log-mode esup avy yasnippet-snippets yasnippet-bundle ac-helm yasnippet auto-dim-other-buffers jedi csv-mode helm-swoop magit web-mode auto-virtualenvwrapper evil-commentary helm-projectile smartparens evil-leader leuven-theme use-package nlinum-relative helm fuzzy flycheck flatui-theme exec-path-from-shell evil-tabs evil-surround))))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

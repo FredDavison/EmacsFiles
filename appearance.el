@@ -9,8 +9,9 @@
 (defconst fcd-ui-background    "white")
 (defconst fcd-ui-foreground  "#58C0E8")
 (defconst fcd-ui-tertiary  "#edf0f2")
+(defconst fcd-ui-mode-line-background  "#335EA8")
 (defconst fcd-ui-tertiary-strong  "##bdbfc1")
-(defconst fcd-ui-mode-line-inactive "grey87")
+(defconst fcd-ui-mode-line-inactive "#9B9C97")
 
 
 (defvar current-ui-state nil
@@ -33,8 +34,7 @@
     (set-face-attribute 'mode-line nil
 			:box fcd-ui-tertiary)
     (set-face-attribute 'mode-line-inactive nil
-			:box fcd-ui-tertiary)
-    )))
+			:box fcd-ui-tertiary))))
 
 (defun fcd/set-face-font ()
   (when (eq system-type 'windows-nt)
@@ -85,15 +85,15 @@
     (when (not (minibufferp buffer))
       (progn
 	(setq mode-line-format startup-mode-line-format)
-	(set-face-attribute 'mode-line nil :height 1.0)
-	(set-face-attribute 'mode-line-inactive nil :height 1.0)
+	(set-face-attribute 'mode-line nil :height 1.05)
+	(set-face-attribute 'mode-line-inactive nil :height 1.05)
 	(force-mode-line-update)))))
 
 
 (defun fcd/init-ui ()
   (interactive)
     (set-face-attribute 'mode-line nil
-			:background fcd-ui-tertiary
+			:background fcd-ui-mode-line-background
 			:foreground fcd-ui-foreground
 			:height 0.9
 			:box fcd-ui-tertiary-strong)
@@ -103,9 +103,11 @@
 			:height 0.9
 			:box fcd-ui-tertiary-strong)
     (set-face-attribute 'window-divider nil
-			:foreground fcd-ui-tertiary-strong) ;; not sure what this does - Windows only?
-    (set-face-foreground 'vertical-border fcd-ui-tertiary-strong)
-    (set-face-background 'vertical-border (face-background 'vertical-border))
+			:foreground fcd-ui-mode-line-background) ;; not sure what this does - Windows only?
+			;; :foreground fcd-ui-tertiary-strong) ;; not sure what this does - Windows only?
+    ;; (set-face-foreground 'vertical-border fcd-ui-tertiary-strong)
+    (set-face-foreground 'vertical-border fcd-ui-mode-line-background)
+    (set-face-background 'vertical-border (face-foreground 'vertical-border))
     (set-face-attribute 'linum nil
 			:background "white"
 			:foreground fcd-ui-foreground)
