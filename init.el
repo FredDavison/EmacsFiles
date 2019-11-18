@@ -26,6 +26,7 @@
 (tool-bar-mode -1)
 (global-hl-line-mode t)
 (set-default 'truncate-lines t)
+(setq-default tab-width 4)
 (setq-default indent-tabs-mode nil)
 
 (autoload 'dired-jump "dired-x"
