@@ -191,13 +191,13 @@
 
 (use-package helm-projectile
   :config
-  (projectile-mode t)
-  (helm-projectile-on)
-  (setq projectile-globally-ignored-file-suffixes
-        '("pyc" "~" "#" "exe" "sdf" "xcf" "xlsm" "xlsx" "png" "bmp" "jpg" "zip" "whl"
-          "docx" "doc"))
-  (setq projectile-indexing-method 'alien)
-  )
+  (when (not (eq system-type 'windows-nt))
+    (projectile-mode t)
+    (helm-projectile-on)
+    (setq projectile-globally-ignored-file-suffixes
+          '("pyc" "~" "#" "exe" "sdf" "xcf" "xlsm" "xlsx" "png" "bmp" "jpg" "zip" "whl"
+            "docx" "doc"))
+    (setq projectile-indexing-method 'alien)))
 
 (use-package rjsx-mode)
 
