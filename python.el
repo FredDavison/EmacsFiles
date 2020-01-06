@@ -23,7 +23,6 @@
 (defun fcd/insert-ipdb-break ()
   (interactive)
   (save-excursion
-    (goto-line (1- (line-number-at-pos)))
     (end-of-line)
     (insert "\nimport ipdb; ipdb.set_trace()")
     (python-indent-line)
@@ -33,7 +32,6 @@
 (defun fcd/insert-ipdb-break-with-traceback ()
   (interactive)
   (save-excursion
-    (goto-line (1- (line-number-at-pos)))
     (end-of-line)
     (insert "\nimport traceback; traceback.print_exc();")
     (python-indent-line)
