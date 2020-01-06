@@ -8,7 +8,6 @@
 (evil-define-operator fcd/evil-try-except-wrap (beg end)
   "Wrap code in a Python try-except block."
   :type line
-  (progn
     (let ((indent-line (line-number-at-pos beg))
           (end-indent-line (1+ (line-number-at-pos end)))
           (wrap-text (buffer-substring-no-properties beg end)))
@@ -18,7 +17,7 @@
         (goto-line indent-line)
         (python-indent-line)
         (setq indent-line (1+ indent-line))
-        ))))
+        )))
 
 ; BELOW FUNCTIONS NEED FIXING SO THEY DON'T USE INTERACTIVE COMMANDS
 
