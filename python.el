@@ -19,15 +19,18 @@
         (setq indent-line (1+ indent-line))
         )))
 
-; BELOW FUNCTIONS NEED FIXING SO THEY DON'T USE INTERACTIVE COMMANDS
 
 (defun fcd/insert-ipdb-break ()
   (interactive)
-  (progn
-    (evil-open-below 1)
-    (insert "import ipdb; ipdb.set_trace()")
-    (evil-normal-state)))
+  (save-excursion
+    (goto-line (1- (line-number-at-pos)))
+    (end-of-line)
+    (insert "\nimport ipdb; ipdb.set_trace()")
+    (python-indent-line)
+    ))
 
+
+; BELOW FUNCTIONS NEED FIXING SO THEY DON'T USE INTERACTIVE COMMANDS
 
 (defun fcd/insert-ipdb-break-with-traceback ()
   (interactive)
