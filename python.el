@@ -34,11 +34,13 @@
 
 (defun fcd/insert-ipdb-break-with-traceback ()
   (interactive)
-  (progn
-    (evil-open-below 1)
-    (insert "import traceback; traceback.print_exc();")
+  (save-excursion
+    (goto-line (1- (line-number-at-pos)))
+    (end-of-line)
+    (insert "\nimport traceback; traceback.print_exc();")
+    (python-indent-line)
     (fcd/insert-ipdb-break)
-    (evil-normal-state)))
+    ))
 
 
 (defun fcd/insert-ipdb-try-clause ()
