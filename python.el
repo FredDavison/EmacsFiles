@@ -30,8 +30,6 @@
     ))
 
 
-; BELOW FUNCTIONS NEED FIXING SO THEY DON'T USE INTERACTIVE COMMANDS
-
 (defun fcd/insert-ipdb-break-with-traceback ()
   (interactive)
   (save-excursion
@@ -42,19 +40,6 @@
     (fcd/insert-ipdb-break)
     ))
 
-
-(defun fcd/insert-ipdb-try-clause ()
-  (interactive)
-  (progn
-    (evil-insert-line 0)
-    (insert (kbd "TAB"))
-    (evil-open-above 0)
-    (insert "try:")
-    (evil-next-line)
-    (evil-open-below 0)
-    (python-indent-dedent-line-backspace 4)
-    (insert "except:")
-    (fcd/insert-ipdb-break-with-traceback)))
 
 (provide 'python)
 ;;; python.el ends here
