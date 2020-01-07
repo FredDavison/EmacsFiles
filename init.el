@@ -3,6 +3,7 @@
 					; TODO:
 					; make dashes not separate words in elisp mode
 					; Modify mode line
+                                        ; check gls program exists before setting it as ls alternative
 
 					; DONE:
 					; load appearance functions from other file
@@ -502,6 +503,7 @@
 
                                         ; Configure # key to work as intended in evil-mode on Mac
 (when (eq system-type 'darwin)
+  (setq insert-directory-program "/usr/local/bin/gls")
   (global-set-key (kbd "M-3") '(lambda () (interactive) (insert "#")))
   (define-key evil-normal-state-map (kbd "M-3" ) 'evil-search-word-backward)
   (define-key isearch-mode-map (kbd "M-3") '(lambda () (interactive) (isearch-process-search-char ?\#))))
