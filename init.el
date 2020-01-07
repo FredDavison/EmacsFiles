@@ -131,10 +131,6 @@
 (use-package auto-complete
   :config
   (global-auto-complete-mode t)
-  (setq ac-use-menu-map t)
-  (if (eq system-type 'windows-nt)
-      (setq ac-auto-start nil)
-      (setq ac-auto-start 2))
   (setq ac-max-width 0.3)
   (add-hook 'emacs-lisp-mode-hook 'set-elisp-ac-sources))
 
@@ -151,7 +147,10 @@
   ;; Use C-c <tab> to activate completion menu.
   ;; Use C-s to activate fuzzy search in completion menu
   (add-hook 'python-mode-hook 'jedi:setup)
+  ;; (add-hook 'python-mode-hook '(setq ac-sources '(ac-source-jedi-direct)))
+  (add-hook 'python-mode-hook 'set-python-ac-sources)
   (global-set-key (kbd  "C-c <tab>") 'jedi:complete)
+  (setq jedi:complete-on-dot t)
   (setq python-environment-directory venv-location))
 
 
@@ -386,17 +385,17 @@
  )
 
 
-(defun set-python-ac-sources ()
-  "Only use jedi as auto-complete source."
-  (setq ac-sources '(ac-source-jedi-direct)))
-
-
 (defun set-elisp-ac-sources ()
   (setq ac-sources '(ac-source-functions
                      ac-source-variables
                      ac-source-features
                      ac-source-symbols
                      ac-source-words-in-same-mode-buffers)))
+
+
+(defun set-python-ac-sources ()
+  "Only use jedi as auto-complete source."
+  (setq ac-sources '(ac-source-jedi-direct)))
 
 
 (when (eq system-type 'windows-nt)
@@ -576,4 +575,4 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(font-lock-comment-face ((t (:foreground "firebrick" :slant italic)))))
