@@ -104,6 +104,7 @@
   (evil-leader/set-key-for-mode 'python-mode "i" 'fcd/insert-ipdb-break)
   (evil-leader/set-key-for-mode 'python-mode "T" 'fcd/insert-ipdb-try-clause)
   (evil-leader/set-key-for-mode 'python-mode "t" 'fcd/insert-ipdb-break-with-traceback)
+  (evil-leader/set-key-for-mode 'python-mode "E" 'fcd/evil-try-except-wrap)
   (evil-leader/set-key "n" 'fcd/toggle-global-nlinum-relative)
   (evil-leader/set-key "b" 'switch-to-buffer)
   (evil-leader/set-key "C" 'flycheck-clear)
@@ -231,6 +232,7 @@
 
 (defvar init-location (f-join (getenv "HOME") ".emacs.d"))
 (load (f-join init-location "appearance.el"))
+(load (f-join init-location "python.el"))
 
 (defun fcd/show-buffer-file-name ()
     (interactive)
@@ -249,37 +251,6 @@
   (progn
     (evil-open-above count)
     (evil-normal-state)))
-
-
-(defun fcd/insert-ipdb-break ()
-  (interactive)
-  (progn
-    (evil-open-below 1)
-    (insert "import ipdb; ipdb.set_trace()")
-    (evil-normal-state)))
-
-
-(defun fcd/insert-ipdb-break-with-traceback ()
-  (interactive)
-  (progn
-    (evil-open-below 1)
-    (insert "import traceback; traceback.print_exc();")
-    (fcd/insert-ipdb-break)
-    (evil-normal-state)))
-
-
-(defun fcd/insert-ipdb-try-clause ()
-  (interactive)
-  (progn
-    (evil-insert-line 0)
-    (insert (kbd "TAB"))
-    (evil-open-above 0)
-    (insert "try:")
-    (evil-next-line)
-    (evil-open-below 0)
-    (python-indent-dedent-line-backspace 4)
-    (insert "except:")
-    (fcd/insert-ipdb-break-with-traceback)))
 
 
 (defun fcd/substitute-before-equal-sign ()
@@ -499,6 +470,7 @@
     (fcd/set-ui-to-current-ui-state)
     (fcd/set-face-font)))
 
+
 (defun fcd/duplicate-window-vertically ()
   (interactive)
   "Make two windows vertically split focussed on current buffer."
@@ -554,6 +526,7 @@
 (global-set-key (kbd "C-c SPC") 'redraw-display)
 
 (define-key global-map (kbd "C-x C-j" )'dired-jump)
+(define-key global-map (kbd "C-h F") 'find-function)
                                         ; ----------------------------------------------------------------------------- ;
                                         ; Auto
                                         ; ----------------------------------------------------------------------------- ;
@@ -568,7 +541,7 @@
     ("15348febfa2266c4def59a08ef2846f6032c0797f001d7b9148f30ace0d08bcf" default)))
  '(package-selected-packages
    (quote
-    (flycheck-demjsonlint rjsx-mode edit-indirect markdown-mode command-log-mode esup avy yasnippet-snippets yasnippet-bundle ac-helm yasnippet auto-dim-other-buffers jedi csv-mode helm-swoop magit web-mode auto-virtualenvwrapper evil-commentary helm-projectile smartparens evil-leader leuven-theme use-package nlinum-relative helm fuzzy flycheck flatui-theme exec-path-from-shell evil-tabs evil-surround))))
+    (auctex dash-functional swiper aio flycheck-demjsonlint rjsx-mode edit-indirect markdown-mode command-log-mode esup avy yasnippet-snippets yasnippet-bundle ac-helm yasnippet auto-dim-other-buffers jedi csv-mode helm-swoop magit web-mode auto-virtualenvwrapper evil-commentary helm-projectile smartparens evil-leader leuven-theme use-package nlinum-relative helm fuzzy flycheck flatui-theme exec-path-from-shell evil-tabs evil-surround))))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
