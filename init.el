@@ -26,6 +26,7 @@
 (tool-bar-mode -1)
 (global-hl-line-mode t)
 (set-default 'truncate-lines t)
+(setq-default tab-width 4)
 (setq-default indent-tabs-mode nil)
 
 (autoload 'dired-jump "dired-x"
@@ -191,13 +192,13 @@
 
 (use-package helm-projectile
   :config
-  (projectile-mode t)
-  (helm-projectile-on)
-  (setq projectile-globally-ignored-file-suffixes
-        '("pyc" "~" "#" "exe" "sdf" "xcf" "xlsm" "xlsx" "png" "bmp" "jpg" "zip" "whl"
-          "docx" "doc"))
-  (setq projectile-indexing-method 'alien)
-  )
+  (when (not (eq system-type 'windows-nt))
+    (projectile-mode t)
+    (helm-projectile-on)
+    (setq projectile-globally-ignored-file-suffixes
+          '("pyc" "~" "#" "exe" "sdf" "xcf" "xlsm" "xlsx" "png" "bmp" "jpg" "zip" "whl"
+            "docx" "doc"))
+    (setq projectile-indexing-method 'alien)))
 
 (use-package rjsx-mode)
 
@@ -426,8 +427,8 @@
 (require 'recentf)
 (recentf-mode 1)
 (add-hook 'find-file-hook 'recentf-save-list)
-(setq recentf-max-menu-items 200)
-(setq recentf-max-saved-items 200)
+(setq recentf-max-menu-items 500)
+(setq recentf-max-saved-items nil)
 (global-set-key "\C-x\ \C-r" 'helm-recentf)
 
 
