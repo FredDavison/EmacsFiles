@@ -516,6 +516,9 @@
 (global-set-key (kbd "C-c m s") 'magit-status)
 (global-set-key (kbd "C-c b") 'helm-projectile-find-file)
 
+(global-set-key (kbd "C-c .") 'xref-find-definitions)
+(global-set-key (kbd "C-c ,") 'xref-pop-marker-stack)
+
 (require 'python)
 (define-key python-mode-map (kbd "C-c C-c")
   (progn
