@@ -235,7 +235,9 @@
 (defvar init-location (f-join (getenv "HOME") ".emacs.d"))
 (load (f-join init-location "appearance.el"))
 (load (f-join init-location "python.el"))
-(load (f-join init-location "rust.el"))
+
+(when (require 'rust-mode nil 'no-error)
+  (load (f-join init-location "rust.el")))
 
 (defun fcd/show-buffer-file-name ()
     (interactive)
