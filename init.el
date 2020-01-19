@@ -174,6 +174,15 @@
 (use-package fuzzy)
 
 
+(use-package xenops
+  :load-path "~/Development/xenops"
+  :config
+  (define-key LaTeX-mode-map (kbd "C-c x") 'xenops-mode)
+  (defconst xenops-dependencies
+    ;; auctex is installed separately
+    '(aio avy dash dash-functional f org s use-package))
+  (add-hook 'LaTeX-mode-hook 'xenops-mode))
+
 
 (use-package helm
   :config
@@ -235,6 +244,9 @@
 ; ----------------------------------------------------------------------------- ;
 ;;; Code                                                                          ;
 ; ----------------------------------------------------------------------------- ;
+
+(setq mac-command-modifier 'super)
+(setq mac-option-modifier 'meta)
 
 (defvar init-location (f-join (getenv "HOME") ".emacs.d"))
 (load (f-join init-location "appearance.el"))
