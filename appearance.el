@@ -10,7 +10,7 @@
 (defconst fcd-ui-foreground  "#58C0E8")
 (defconst fcd-ui-tertiary  "#edf0f2")
 (defconst fcd-ui-mode-line-background  "#335EA8")
-(defconst fcd-ui-tertiary-strong  "##bdbfc1")
+(defconst fcd-ui-tertiary-strong  "#bdbfc1")
 (defconst fcd-ui-mode-line-inactive "#9B9C97")
 
 
