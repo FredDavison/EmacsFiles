@@ -459,9 +459,9 @@
 ; dired settings
 (setq dired-listing-switches "-aBhl  --group-directories-first")
 
-                                        ; Make underscore and dash not delimit words for Evil mode
-(modify-syntax-entry ?_ "w" (standard-syntax-table))
-(modify-syntax-entry ?- "w" (standard-syntax-table))
+; Make underscore and dash not delimit words for Evil mode
+(modify-syntax-entry ?_ "w" emacs-lisp-mode-syntax-table)
+(modify-syntax-entry ?- "w" emacs-lisp-mode-syntax-table)
 
 
 (setq inhibit-splash-screen t)
