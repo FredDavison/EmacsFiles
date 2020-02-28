@@ -189,6 +189,7 @@
   (require 'helm-config)
   (helm-mode t)
   (setq helm-mode-fuzzy-match nil)
+  (setq helm-window-prefer-horizontal-split t)
   (global-set-key (kbd "M-x") 'helm-M-x)
   (global-set-key (kbd "C-x C-f") 'helm-find-files)
   (global-set-key (kbd "C-x b") 'helm-mini)
@@ -573,4 +574,5 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(font-lock-comment-face ((t (:foreground "firebrick" :slant italic)))))
+ '(font-lock-comment-face ((t (:foreground "firebrick" :slant italic))))
+ '(hl-line ((t (:background "#F6FECD")))))
