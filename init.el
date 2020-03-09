@@ -21,7 +21,13 @@
 ;;; Code:
 ; ----------------------------------------------------------------------------- ;
 ; Do appearance stuff right away
-(fcd/set-ui-appearancce)
+(blink-cursor-mode 0)
+(menu-bar-mode -1)
+(scroll-bar-mode -1)
+(tool-bar-mode -1)
+(global-hl-line-mode t)
+(set-default 'truncate-lines t)
+
 
 (setq-default tab-width 4)
 (setq-default indent-tabs-mode nil)
@@ -477,9 +483,6 @@
 (setq js-indent-level 2)
 
 
-(defun fcd/set-ui-after-make-frame (frame)
-  (fcd/set-ui-appearancce))
-
 (defun fcd/set-ui-appearancce ()
     (progn
       (blink-cursor-mode 0)
@@ -491,6 +494,9 @@
       (fcd/init-ui)
       (fcd/set-ui-to-current-ui-state)
       (fcd/set-face-font)))
+
+(defun fcd/set-ui-after-make-frame (frame)
+  (fcd/set-ui-appearancce))
 
 
 (defun fcd/duplicate-window-vertically ()
