@@ -21,12 +21,8 @@
 ;;; Code:
 ; ----------------------------------------------------------------------------- ;
 ; Do appearance stuff right away
-(blink-cursor-mode 0)
-(menu-bar-mode -1)
-(scroll-bar-mode -1)
-(tool-bar-mode -1)
-(global-hl-line-mode t)
-(set-default 'truncate-lines t)
+(fcd/set-ui-appearancce)
+
 (setq-default tab-width 4)
 (setq-default indent-tabs-mode nil)
 
@@ -482,16 +478,19 @@
 
 
 (defun fcd/set-ui-after-make-frame (frame)
-  (progn
-    (blink-cursor-mode 0)
-    (menu-bar-mode -1)
-    (scroll-bar-mode -1)
-    (tool-bar-mode -1)
-    (global-hl-line-mode t)
-    (set-default 'truncate-lines t)
-    (fcd/init-ui)
-    (fcd/set-ui-to-current-ui-state)
-    (fcd/set-face-font)))
+  (fcd/set-ui-appearancce))
+
+(defun fcd/set-ui-appearancce ()
+    (progn
+      (blink-cursor-mode 0)
+      (menu-bar-mode -1)
+      (scroll-bar-mode -1)
+      (tool-bar-mode -1)
+      (global-hl-line-mode t)
+      (set-default 'truncate-lines t)
+      (fcd/init-ui)
+      (fcd/set-ui-to-current-ui-state)
+      (fcd/set-face-font)))
 
 
 (defun fcd/duplicate-window-vertically ()
@@ -499,13 +498,11 @@
   "Make two windows vertically split focussed on current buffer."
   (delete-other-windows)
   (split-window-right)
-  (other-window 1)
-  )
+  (other-window 1))
 
 
                                         ; Only do stuff with the UI after frames exist. Frames don't exist when daemon starts
                                         ; Run it as well for the case when the frame is already created before hook is added
-(fcd/set-ui-after-make-frame)
 (add-hook 'after-make-frame-functions 'fcd/set-ui-after-make-frame)
 
 
