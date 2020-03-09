@@ -481,7 +481,7 @@
 (setq js-indent-level 2)
 
 
-(defun fcd/set-ui-after-make-frame ()
+(defun fcd/set-ui-after-make-frame (frame)
   (progn
     (blink-cursor-mode 0)
     (menu-bar-mode -1)
