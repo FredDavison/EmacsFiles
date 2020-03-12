@@ -463,8 +463,9 @@
 ; dired settings
 (setq dired-listing-switches "-aBhl  --group-directories-first")
 
-; Make underscore and dash not delimit words for Evil mode
-(modify-syntax-entry ?_ "w" emacs-lisp-mode-syntax-table)
+; Make underscore delimit words
+(modify-syntax-entry ?_ "w" (standard-syntax-table))
+; Make hyphen delimit words in elisp
 (modify-syntax-entry ?- "w" emacs-lisp-mode-syntax-table)
 
 
