@@ -542,6 +542,7 @@
 
 (global-set-key (kbd "C-c .") 'xref-find-definitions)
 (global-set-key (kbd "C-c ,") 'xref-pop-marker-stack)
+(global-set-key (kbd "C-x C-c") 'save-buffers-kill-emacs)
 
 (require 'python)
 (define-key python-mode-map (kbd "C-c C-c")
