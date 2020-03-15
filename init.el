@@ -463,8 +463,9 @@
 ; dired settings
 (setq dired-listing-switches "-aBhl  --group-directories-first")
 
-; Make underscore and dash not delimit words for Evil mode
-(modify-syntax-entry ?_ "w" emacs-lisp-mode-syntax-table)
+; Make underscore delimit words
+(modify-syntax-entry ?_ "w" (standard-syntax-table))
+; Make hyphen delimit words in elisp
 (modify-syntax-entry ?- "w" emacs-lisp-mode-syntax-table)
 
 
@@ -541,6 +542,7 @@
 
 (global-set-key (kbd "C-c .") 'xref-find-definitions)
 (global-set-key (kbd "C-c ,") 'xref-pop-marker-stack)
+(global-set-key (kbd "C-x C-c") 'save-buffers-kill-emacs)
 (define-key ielm-map (kbd "M-R") 'move-to-window-line-top-bottom)
 
 (require 'python)
