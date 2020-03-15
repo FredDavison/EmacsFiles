@@ -541,6 +541,7 @@
 
 (global-set-key (kbd "C-c .") 'xref-find-definitions)
 (global-set-key (kbd "C-c ,") 'xref-pop-marker-stack)
+(define-key ielm-map (kbd "M-R") 'move-to-window-line-top-bottom)
 
 (require 'python)
 (define-key python-mode-map (kbd "C-c C-c")
