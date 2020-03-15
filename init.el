@@ -112,6 +112,7 @@
   (evil-leader/set-key "b" 'switch-to-buffer)
   (evil-leader/set-key "C" 'flycheck-clear)
   (evil-leader/set-key "3" 'fcd/duplicate-window-vertically)
+  (evil-leader/set-key "s" 'fcd/substitute-inside)
   )
 
 
