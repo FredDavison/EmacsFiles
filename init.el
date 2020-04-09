@@ -110,6 +110,7 @@
   (evil-leader/set-key-for-mode 'python-mode "E" 'fcd/evil-try-except-wrap)
   (evil-leader/set-key "n" 'fcd/toggle-global-nlinum-relative)
   (evil-leader/set-key "b" 'switch-to-buffer)
+  (evil-leader/set-key "r" 'helm-recentf)
   (evil-leader/set-key "C" 'flycheck-clear)
   (evil-leader/set-key "3" 'fcd/duplicate-window-vertically)
   )
@@ -452,7 +453,7 @@
 (recentf-mode 1)
 (add-hook 'find-file-hook 'recentf-save-list)
 (setq recentf-max-menu-items 200)
-(setq recentf-max-saved-items nil)
+(setq recentf-max-saved-items 250)
 (global-set-key "\C-x\ \C-r" 'helm-recentf)
 
 
