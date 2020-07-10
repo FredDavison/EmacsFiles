@@ -109,7 +109,7 @@
   (evil-leader/set-key-for-mode 'python-mode "t" 'fcd/insert-ipdb-break-with-traceback)
   (evil-leader/set-key-for-mode 'python-mode "E" 'fcd/evil-try-except-wrap)
   (evil-leader/set-key "n" 'fcd/toggle-global-nlinum-relative)
-  (evil-leader/set-key "b" 'switch-to-buffer)
+  (evil-leader/set-key "b" 'helm-mini) ;; alternative to 'switch-to-buffer
   (evil-leader/set-key "r" 'helm-recentf)
   (evil-leader/set-key "C" 'flycheck-clear)
   (evil-leader/set-key "3" 'fcd/duplicate-window-vertically)
@@ -574,7 +574,7 @@
     ("15348febfa2266c4def59a08ef2846f6032c0797f001d7b9148f30ace0d08bcf" default)))
  '(package-selected-packages
    (quote
-    (json-mode avy-flycheck flycheck-rust flycheck auctex dash-functional swiper aio flycheck-demjsonlint rjsx-mode edit-indirect markdown-mode command-log-mode esup avy yasnippet-snippets yasnippet-bundle ac-helm yasnippet auto-dim-other-buffers jedi csv-mode helm-swoop magit web-mode auto-virtualenvwrapper evil-commentary helm-projectile smartparens evil-leader leuven-theme use-package nlinum-relative helm fuzzy flatui-theme exec-path-from-shell evil-tabs evil-surround))))
+    (xterm-color magit jedi json-mode avy-flycheck flycheck-rust flycheck auctex dash-functional swiper aio flycheck-demjsonlint rjsx-mode edit-indirect markdown-mode command-log-mode esup avy yasnippet-snippets yasnippet-bundle ac-helm yasnippet auto-dim-other-buffers csv-mode helm-swoop web-mode auto-virtualenvwrapper evil-commentary helm-projectile smartparens evil-leader leuven-theme use-package nlinum-relative helm fuzzy flatui-theme exec-path-from-shell evil-tabs evil-surround))))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
